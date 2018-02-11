@@ -1,1 +1,1 @@
-# Foosball
+# FoosballSuperCore
