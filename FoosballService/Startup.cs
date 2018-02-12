@@ -1,9 +1,12 @@
-﻿using FoosballCore.Services;
+﻿using System.Linq;
+using FoosballCore.OldLogic;
+using FoosballCore.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Repository;
 
 namespace FoosballCore
 {
@@ -24,6 +27,20 @@ namespace FoosballCore
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+            
+            //Repository
+            services.AddScoped<ILeaderboardViewRepository, LeaderboardViewRepository>();
+            services.AddScoped<IMatchRepository, MatchRepository>();
+            services.AddScoped<ISeasonRepository, SeasonRepository>();
+            services.AddScoped<IMatchupResultRepository, MatchupResultRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            //Logic
+            services.AddScoped<IAchievementsService, AchievementsService>();
+            services.AddScoped<ILeaderboardService, LeaderboardService>();
+            services.AddScoped<IMatchupHistoryCreator, MatchupHistoryCreator>();
+            services.AddScoped<ISeasonLogic, SeasonLogic>();
+            services.AddScoped<IRating, EloRating>();
 
             services.AddMvc();
         }
