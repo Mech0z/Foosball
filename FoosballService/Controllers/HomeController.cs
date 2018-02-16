@@ -5,25 +5,35 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoosballCore.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Repository;
+using IdentityUser = Microsoft.AspNetCore.Identity.MongoDB.IdentityUser;
 
 namespace FoosballCore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IServiceProvider _provider;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserStore<IdentityUser> _userStore;
 
-        public HomeController(IServiceProvider provider)
+        public HomeController(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore)
         {
-            _provider = provider;
+            _userManager = userManager;
+            _userStore = userStore;
         }
         public async Task<IActionResult> Index()
         {
-            var userManager = _provider.GetService<UserManager<IdentityUser>>();
-            var result = await userManager.Users.ToListAsync();
+            //var userManager = _provider.GetService<UserManager<IdentityUser>>();
+            IdentityUser result = _userManager.Users.ToList().First();
+            if (result.Roles.All(r => r != "Admin"))
+            {
+                result.AddRole("Admin");
+                await _userStore.UpdateAsync(result, CancellationToken.None);
+            }
+
             return View();
         }
 
