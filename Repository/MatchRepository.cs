@@ -10,7 +10,7 @@ namespace Repository
 {
     public class MatchRepository : BaseRepository<Match>, IMatchRepository
     {
-        public MatchRepository(IOptions<MongoDbSettings> settings) : base(settings, "MatchesV3")
+        public MatchRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "MatchesV3")
         {
 
         }

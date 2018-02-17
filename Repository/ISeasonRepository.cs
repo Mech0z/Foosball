@@ -19,7 +19,7 @@ namespace Repository
 
     public class SeasonRepository : BaseRepository<Season>, ISeasonRepository
     {
-        public SeasonRepository(IOptions<MongoDbSettings> settings) : base(settings, "Seasons")
+        public SeasonRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "Seasons")
         {
 
         }
