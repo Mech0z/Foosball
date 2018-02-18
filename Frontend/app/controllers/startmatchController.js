@@ -19,11 +19,11 @@ app.controller("startmatchController",
 
               setupUsers(leaderboard, users);
 
-              for (var i = 0; i < leaderboard.Entries.length; i++) {
+              for (var i = 0; i < leaderboard.entries.length; i++) {
                   leaderboard.Selected = false;
               }
 
-              $scope.userList = leaderboard.Entries;
+              $scope.userList = leaderboard.entries;
               $scope.loading = false;
 
           }, function (error) {

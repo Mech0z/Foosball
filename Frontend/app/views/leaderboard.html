@@ -19,7 +19,7 @@
                         <th>HISTORY</th>
                     </tr>
                 </thead>
-                <tr ng-repeat="item in leaderboard.Entries">
+                <tr ng-repeat="item in leaderboard.entries">
                     <td >{{$index + 1}}</td>
                     <td>
                         <p>
@@ -28,26 +28,26 @@
                     </td>
                     <td>
                         <p>
-                            {{item.EloRating}}
+                            {{item.eloRating}}
                         </p>
                     </td>
                     <td>
                         <p>
-                            {{item.Form}}
+                            {{item.form}}
                         </p>
                     </td>
                     <td>
                         <p class="playerForm">
-                            {{item.Wins}}/{{item.NumberOfGames}}
+                            {{item.wins}}/{{item.numberOfGames}}
                         </p>
                     </td>
                     <td>
                         <p class="playerForm">
-                            {{(item.Wins / item.NumberOfGames * 100) | number : 2}}%
+                            {{(item.wins / item.numberOfGames * 100) | number : 2}}%
                         </p>
                     </td>
                     <td>
-                        <a ng-href="#/player/{{item.UserName}}">
+                        <a ng-href="#/player/{{item.userName}}">
                             <p>
                                 <b>view</b>
                             </p>

@@ -18,10 +18,10 @@ app.controller("leaderboardController",
 
                 $scope.seasons = [];
                 for (var i = 0; i < payload[0].length; i++) {
-                    $scope.seasons.push(payload[0][i].SeasonName);
+                    $scope.seasons.push(payload[0][i].seasonName);
                 };
 
-                $scope.selectedSeason = payload[0][0].SeasonName;
+                $scope.selectedSeason = payload[0][0].seasonName;
                 $scope.loading = false;
 
             }, function(error) {

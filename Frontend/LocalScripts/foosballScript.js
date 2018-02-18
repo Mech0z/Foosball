@@ -3,7 +3,7 @@
 
 var setLocalTimeOnMatch = function (matches) {
     for (var i = 0; i < matches.length; i++) {
-        matches[i].LocalTime = toLocalFormat(matches[i].TimeStampUtc);
+        matches[i].localTime = toLocalFormat(matches[i].timeStampUtc);
     }
     return ;
 };
@@ -16,11 +16,11 @@ var toLocalFormat = function (date) {
 
 var setupUsers = function (leaderboard, users) {
 
-    for (var i = 0; i < leaderboard.Entries.length; i++) {
+    for (var i = 0; i < leaderboard.entries.length; i++) {
         for (var j = 0; j < users.length; j++) {
-            if (leaderboard.Entries[i].UserName === users[j].Email) {
-                leaderboard.Entries[i].displayName = users[j].Username;
-                leaderboard.Entries[i].gravatar = get_gravatar(users[j].Email, 50);
+            if (leaderboard.entries[i].userName === users[j].email) {
+                leaderboard.entries[i].displayName = users[j].username;
+                leaderboard.entries[i].gravatar = get_gravatar(users[j].email, 50);
             }
         }
     }
@@ -31,9 +31,9 @@ var setupUsers = function (leaderboard, users) {
 var setupUsersMatches = function (matches, users) {
     for (var i = 0; i < matches.length; i++) {
         for (var j = 0; j < users.length; j++) {
-            for (var p = 0; p < matches[i].PlayerList.length; p++) {
-                if (matches[i].PlayerList[p] === users[j].Email) {
-                    matches[i].PlayerList[p] = users[j].Username;
+            for (var p = 0; p < matches[i].playerList.length; p++) {
+                if (matches[i].playerList[p] === users[j].email) {
+                    matches[i].playerList[p] = users[j].username;
                 }
             }
         }

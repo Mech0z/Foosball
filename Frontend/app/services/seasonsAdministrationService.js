@@ -14,7 +14,7 @@
                     Password: $cookieStore.get("password")
                 };
 
-                $http.post("http://localhost:44716/api/SeasonsAdministration/StartNewSeason", voidRequest)
+                $http.post("https://localhost:44335/SeasonsAdministration/StartNewSeason", voidRequest)
                 .success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).error(function (data, status, headers, config) {
@@ -30,7 +30,7 @@
                     Password: $cookieStore.get("password")
                 };
 
-                $http.post("http://localhost:44716/api/SeasonsAdministration/GetSeasons", voidRequest)
+                $http.post("https://localhost:44335/SeasonsAdministration/GetSeasons", voidRequest)
                 .success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).error(function (data, status, headers, config) {

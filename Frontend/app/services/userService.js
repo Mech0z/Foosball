@@ -9,7 +9,7 @@
             addUser: function (user) {
                 var deferred = $q.defer();
 
-                $http.post("http://localhost:44716/api/player/CreateUser", user)
+                $http.post("https://localhost:44335/player/CreateUser", user)
                    .success(function (data, status, headers, config) {
                        console.log("success adding user");
                        deferred.resolve(data);
@@ -25,7 +25,7 @@
             getUsers: function() {
                 var deferred = $q.defer();
 
-                $http.get("http://localhost:44716/api/player/GetUsers")
+                $http.get("https://localhost:44335/player/GetUsers")
                    .success(function (data, status, headers, config) {
                        console.log(data);
                        deferred.resolve(data);
@@ -38,7 +38,7 @@
             login: function (user) {
                 var deferred = $q.defer();
 
-                $http.post("http://localhost:44716/api/player/Login", user)
+                $http.post("https://localhost:44335/player/Login", user)
                    .success(function (data, status, headers, config) {
                        console.log(data);
                        deferred.resolve(data);
@@ -61,7 +61,7 @@
                 changePasswordRequest.OldPassword = oldPassword;
                 changePasswordRequest.NewPassword = newPassword;
 
-                $http.post("http://localhost:44716/api/player/ChangePassword", changePasswordRequest)
+                $http.post("https://localhost:44335/player/ChangePassword", changePasswordRequest)
                    .success(function (data, status, headers, config) {
                        console.log(data);
                        deferred.resolve(data);  

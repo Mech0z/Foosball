@@ -9,7 +9,7 @@
             getPlayerMatches: function (email) {
                 var deferred = $q.defer();
 
-                $http.get("http://localhost:44716/api/player/GetPlayerMatches?email=" + email)
+                $http.get("https://localhost:44335/player/GetPlayerMatches?email=" + email)
                 .success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).error(function (data, status, headers, config) {
@@ -20,7 +20,7 @@
             getPlayerPartnerWinPercent: function (email) {
                 var deferred = $q.defer();
 
-                $http.get("http://localhost:44716/api/player/GetPlayerPartnerResults?email=" + email)
+                $http.get("https://localhost:44335/player/GetPlayerPartnerResults?email=" + email)
                 .success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).error(function (data, status, headers, config) {

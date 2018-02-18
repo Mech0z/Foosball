@@ -29,7 +29,7 @@
                         Matches: matches
                     };
 
-                    $http.post("http://localhost:44716/api/match/SaveMatch", request)
+                    $http.post("https://localhost:44335/match/SaveMatch", request)
                         .success(function (data, status, headers, config) {
                             console.log("success sending add match request");
                             deferred.resolve(data);
@@ -45,7 +45,7 @@
                 getLatest: function(number) {
                     var deferred = $q.defer();
 
-                    $http.get("http://localhost:44716/api/match/lastgames?numberofmatches=" + number)
+                    $http.get("https://localhost:44335/match/lastgames?numberofmatches=" + number)
                         .success(function(data, status, headers, config) {
                             deferred.resolve(data);
                         }).error(function(data, status, headers, config) {

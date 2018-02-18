@@ -44,6 +44,13 @@ namespace FoosballCore
             services.AddScoped<ISeasonLogic, SeasonLogic>();
             services.AddScoped<IRating, EloRating>();
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
+
             services.AddMvc();
         }
 
@@ -60,6 +67,8 @@ namespace FoosballCore
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseCors("MyPolicy");
 
             app.UseStaticFiles();
 

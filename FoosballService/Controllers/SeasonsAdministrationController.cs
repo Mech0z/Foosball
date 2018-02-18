@@ -31,28 +31,28 @@ namespace FoosballCore.Controllers
         //    {
         //        return Unauthorized();
         //    }
-            
+
         //    var seasonName = _seasonLogic.StartNewSeason();
 
         //    return Ok(seasonName);
         //}
 
-        //[HttpPost]
-        //public IActionResult GetSeasons(VoidRequest request)
-        //{
-        //    var validated = _userRepository.ValidateAndHasRole(new User
-        //    {
-        //        Email = request.Email,
-        //        Password = request.Password
-        //    }, "Admin");
+        [HttpPost]
+        public IActionResult GetSeasons(VoidRequest request)
+        {
+            //var validated = _userRepository.ValidateAndHasRole(new User
+            //{
+            //    Email = request.Email,
+            //    Password = request.Password
+            //}, "Admin");
 
-        //    if (!validated)
-        //    {
-        //        return Unauthorized();
-        //    }
+            //if (!validated)
+            //{
+            //    return Unauthorized();
+            //}
 
-        //    List<Season> seasons = _seasonLogic.GetSeasons();
-        //    return Ok(seasons);
-        //}
+            List<Season> seasons = _seasonLogic.GetSeasons();
+            return Ok(seasons);
+        }
     }
 }
