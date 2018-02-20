@@ -62,7 +62,7 @@ namespace FoosballCore.OldLogic
                 season.Entries = season.Entries.OrderByDescending(x => x.EloRating).ToList();
             }
 
-            return latestLeaderboardViews;
+            return latestLeaderboardViews.OrderByDescending(x => x.SeasonName).ToList();
         }
 
         public void AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match)

@@ -22,12 +22,12 @@ namespace FoosballCore.Controllers
         public async Task<IActionResult> Index()
         {
             //var userManager = _provider.GetService<UserManager<IdentityUser>>();
-            IdentityUser result = _userManager.Users.ToList().First();
-            if (result.Roles.All(r => r != "Admin"))
-            {
-                result.AddRole("Admin");
-                await _userStore.UpdateAsync(result, CancellationToken.None);
-            }
+            //IdentityUser result = _userManager.Users.ToList().First();
+            //if (result.Roles.All(r => r != "Admin"))
+            //{
+            //    result.AddRole("Admin");
+            //    await _userStore.UpdateAsync(result, CancellationToken.None);
+            //}
 
             return View();
         }

@@ -13,7 +13,6 @@ namespace FoosballCore.OldLogic
         private readonly IUserRepository _userRepository;
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
 
-
         public MatchupHistoryCreator(IMatchupResultRepository matchupResultRepository, IMatchRepository matchRepository, IUserRepository userRepository, ILeaderboardViewRepository leaderboardViewRepository)
         {
             _matchupResultRepository = matchupResultRepository;
@@ -22,10 +21,8 @@ namespace FoosballCore.OldLogic
             _leaderboardViewRepository = leaderboardViewRepository;
         }
 
-
         public List<PartnerPercentResult> GetPartnerWinPercent(string email, string season)
         {
-
             var leaderboard = _leaderboardViewRepository.GetLeaderboardView(season);
             double? normalWinRate = null;
             if (leaderboard != null)
@@ -47,7 +44,6 @@ namespace FoosballCore.OldLogic
                     });
                 }
             }
-
 
             var matches = _matchRepository.GetMatches(season);
 

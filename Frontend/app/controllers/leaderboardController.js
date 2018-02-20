@@ -20,7 +20,6 @@ app.controller("leaderboardController",
                 for (var i = 0; i < payload[0].length; i++) {
                     $scope.seasons.push(payload[0][i].seasonName);
                 };
-
                 $scope.selectedSeason = payload[0][0].seasonName;
                 $scope.loading = false;
 
@@ -34,7 +33,7 @@ app.controller("leaderboardController",
         $scope.changedSeason = function() {
             
             for (var i = 0; i < $scope.payloadBackup[0].length; i++) {
-                if ($scope.payloadBackup[0][i].SeasonName === $scope.selectedSeason) {
+                if ($scope.payloadBackup[0][i].seasonName === $scope.selectedSeason) {
                     setupUsers($scope.payloadBackup[0][i], $scope.payloadBackup[1]);
                     $scope.leaderboard = $scope.payloadBackup[0][i];
                 }

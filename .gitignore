@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Frontend/App_Data/PublishProfiles/Foosball - Web Deploy.pubxml
+/FoosballService/Properties/PublishProfiles/FoosballApi - Web Deploy.pubxml
