@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using FoosballCore.OldLogic;
 using FoosballCore.RequestResponse;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Old;
 using Repository;
@@ -56,6 +57,7 @@ namespace FoosballCore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Player")]
         public IActionResult SaveMatch(SaveMatchesRequest saveMatchesRequest)
         {
             if (saveMatchesRequest == null)
