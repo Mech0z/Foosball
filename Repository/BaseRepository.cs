@@ -10,11 +10,11 @@ namespace Repository
         protected static IMongoDatabase Database;
         private readonly string _collectionName;
 
-        public BaseRepository(IOptions<MongoDbSettings> settings, string collectionName)
+        public BaseRepository(IOptions<ConnectionStringsSettings> settings, string collectionName)
         {
-            Client = new MongoClient(settings.Value.ConnectionString);
+            Client = new MongoClient(settings.Value.DefaultConnectionMongoDB);
 
-            Database = Client.GetDatabase(settings.Value.DatabaseName);
+            Database = Client.GetDatabase(settings.Value.MongoDBDatabaseName);
             _collectionName = collectionName;
         }
 

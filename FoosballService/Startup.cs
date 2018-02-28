@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models;
 using Repository;
 
 namespace FoosballCore
@@ -22,6 +23,7 @@ namespace FoosballCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.AddIdentityWithMongoStores(Configuration.GetConnectionString("DefaultConnectionMongoDB"))
                 .AddDefaultTokenProviders();
 
@@ -42,22 +44,31 @@ namespace FoosballCore
             services.AddScoped<ISeasonLogic, SeasonLogic>();
             services.AddScoped<IRating, EloRating>();
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
+
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
                 app.UseDatabaseErrorPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                //app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseCors("MyPolicy");
 
             app.UseStaticFiles();
 

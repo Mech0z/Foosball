@@ -7,9 +7,31 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoosballCore", "FoosballSer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{DD49E708-D1A9-4E7B-8F9A-10328B35BD85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{9B52EB22-CDCA-48E1-A24D-B0EAC4DEDEEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{9B52EB22-CDCA-48E1-A24D-B0EAC4DEDEEC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AspNetCore.Identity.MongoDB", "aspnetcore-identity-mongodb\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj", "{239C55A6-8CEC-44F5-BF4C-D4E6E18965B5}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Frontend", "Frontend\", "{C2473475-254E-46B2-ABD1-EE8CE83096F0}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_57261"
+		Debug.AspNetCompiler.PhysicalPath = "Frontend\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_57261\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_57261"
+		Release.AspNetCompiler.PhysicalPath = "Frontend\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_57261\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "57261"
+		SlnRelativePath = "Frontend\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +55,10 @@ Global
 		{239C55A6-8CEC-44F5-BF4C-D4E6E18965B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{239C55A6-8CEC-44F5-BF4C-D4E6E18965B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{239C55A6-8CEC-44F5-BF4C-D4E6E18965B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

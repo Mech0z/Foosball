@@ -1,0 +1,24 @@
+﻿<div>
+    <div id="mydiv" ng-show="loading" align="center">
+        <img src="images/ajax-loader.gif" class="ajax-loader"/>
+    </div>
+
+    <form ng-submit="submit()" ng-show="!loading">
+        Username
+        <input ng-model="User.Username" minlength="3" maxlength="20" type="text"/>
+        <br/>
+        Email
+        <input ng-model="User.Email" type="email">
+        <br/>
+        Gravatar email
+        <input ng-model="User.GravatarEmail" type="email">
+        <br/>
+        <br/>
+        <input type="submit" id="submit" value="Submit"/>
+    </form>
+    <br/>
+
+    <div ng-show="errorMessage" align="center">
+        <pre>{{errorMessage}}</pre>
+    </div>
+</div>

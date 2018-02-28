@@ -10,7 +10,7 @@ namespace Repository
 {
     public class LeaderboardViewRepository : BaseRepository<LeaderboardView>, ILeaderboardViewRepository
     {
-        public LeaderboardViewRepository(IOptions<MongoDbSettings> settings) : base(settings, "LeaderboardViews")
+        public LeaderboardViewRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "LeaderboardViews")
         {
 
         }

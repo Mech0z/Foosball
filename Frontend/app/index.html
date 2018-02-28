@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="Foosball">
+<head>
+    <title>Foosball 9000</title>
+
+    <script src="../Scripts/jquery-2.2.3.js"></script>
+    <script src="../Scripts/umd/popper.js"></script>
+
+    <script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script><!-- Tether for Bootstrap -->
+
+    <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js"></script><!-- Bootstrap -->
+
+    <link href="../Content/bootstrap.css" rel="stylesheet">
+    <link href="../Content/Style.css" rel="stylesheet">
+    <script src="../Scripts/angular.js"></script>
+    <script src="../Scripts/angular-route.js"></script>
+    <script src="../Scripts/angular-resource.js"></script>
+    <script src="../Scripts/angular-cookies.js"></script>
+
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
+    <script src="../Scripts/bootstrap.js"></script>
+    <script src="../Scripts/date.format.js"></script>
+
+    <script src="../LocalScripts/foosballScript.js"></script>
+
+    <script src="app.js"></script>
+
+    <script src="controllers/homeController.js"></script>
+    <script src="controllers/leaderboardController.js"></script>
+    <script src="controllers/achievementsController.js"></script>
+    <script src="controllers/addmatchController.js"></script>
+    <script src="controllers/startmatchController.js"></script>
+    <script src="controllers/adduserController.js"></script>
+    <script src="controllers/lastgamesController.js"></script>
+    <script src="controllers/playerController.js"></script>
+    <script src="controllers/loginController.js"></script>
+    <script src="controllers/seasonsAdministrationController.js"></script>
+
+    <script src="services/achievementsService.js"></script>
+    <script src="services/matchService.js"></script>
+    <script src="services/userService.js"></script>
+    <script src="services/leaderboardService.js"></script>
+    <script src="services/playerService.js"></script>
+    <script src="services/seasonsAdministrationService.js"></script>
+
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><!--<a class="btn navbar-btn" href="#/">Home</a>--></li>
+                    <li><a class="btn navbar-btn" href="#/leaderboard">Leaderboard</a></li>
+                    <li><a class="btn navbar-btn" href="#/startmatch">Start Match</a></li>
+                    <li><a class="btn navbar-btn" href="#/lastgames">Last Games</a></li>
+                    <li><a class="btn navbar-btn" href="#/addmatch">Add Match</a></li>
+                    <li><a class="btn navbar-btn" href="#/adduser">Add User</a></li>
+                    <li><a class="btn navbar-btn" href="#/achievements">Achievements</a></li>
+                    <li><a class="btn navbar-btn" href="#/login">Login</a></li>
+                    <li><a class="btn navbar-btn" href="#/seasonsAdministration">Seasons</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" ng-controller="mainController">
+        <div class="col-md-12" ng-view></div>
+    </div>
+
+</body>
+</html>

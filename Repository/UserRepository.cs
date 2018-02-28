@@ -10,7 +10,7 @@ namespace Repository
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        public UserRepository(IOptions<MongoDbSettings> settings) : base(settings, "users")
+        public UserRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "Users")
         {
         }
 

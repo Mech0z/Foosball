@@ -9,7 +9,7 @@ namespace Repository
 {
     public class MatchupResultRepository : BaseRepository<MatchupResult>, IMatchupResultRepository
     {
-        public MatchupResultRepository(IOptions<MongoDbSettings> settings) : base(settings, "MatchupResults")
+        public MatchupResultRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "MatchupResults")
         {
 
         }
