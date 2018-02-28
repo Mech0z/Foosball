@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Models;
 using Models.Old;
@@ -13,11 +14,19 @@ namespace Repository
         {
         }
 
-        public List<User> GetUsers()
+        public async Task<List<User>> GetUsers()
         {
             var query = Collection.AsQueryable();
+            
+            var users = await query.ToListAsync();
 
-            return query.ToList();
+            foreach (User user in users)
+            {
+                user.Password = "";
+                user.Roles = null;
+            }
+
+            return users;
         }
 
         //public void AddUser(User user)

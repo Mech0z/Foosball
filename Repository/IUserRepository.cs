@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Models.Old;
 
 namespace Repository
 {
     public interface IUserRepository
     {
-        List<User> GetUsers();
+        Task<List<User>> GetUsers();
         //void AddUser(User user);
         //User GetUser(string email);
         //string Login(User inputUser);

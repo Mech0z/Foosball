@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FoosballCore.OldLogic;
 using FoosballCore.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
@@ -41,9 +42,9 @@ namespace FoosballCore.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<User> GetUsers()
+        public async Task<IEnumerable<User>> GetUsers()
         {
-            return _userRepository.GetUsers();
+            return await _userRepository.GetUsers();
         }
 
         //[HttpPost]
