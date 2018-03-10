@@ -27,19 +27,19 @@ namespace FoosballCore.Controllers
             _userRepository = userRepository;
         }
 
-        public async IList<CombinedUser> GetUsers()
-        {
-            var combinedUsers = new List<CombinedUser>();
+        //public async IList<CombinedUser> GetUsers()
+        //{
+        //    var combinedUsers = new List<CombinedUser>();
 
-            var internalUsers = await _userRepository.GetUsers();
-            var identityUsers = await _userManager.Users.ToListAsync();
+        //    var internalUsers = await _userRepository.GetUsers();
+        //    var identityUsers = await _userManager.Users.ToListAsync();
 
-            foreach (User internalUser in internalUsers)
-            {
+        //    foreach (User internalUser in internalUsers)
+        //    {
                 
-            }
+        //    }
 
-            return combinedUsers;
-        }
+        //    return combinedUsers;
+        //}
     }
 }
