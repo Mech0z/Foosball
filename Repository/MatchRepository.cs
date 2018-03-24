@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Models;
 using Models.Old;
@@ -15,7 +16,7 @@ namespace Repository
 
         }
 
-        public List<Match> GetMatches(string season)
+        public async Task<List<Match>> GetMatches(string season)
         {
             IMongoQueryable<Match> result;
             if (season == null)
@@ -27,12 +28,12 @@ namespace Repository
                 result = Collection.AsQueryable().Where(x => x.SeasonName == season);
             }
 
-            return result.ToList();
+            return await result.ToListAsync();
         }
 
-        public List<string> GetUniqueEmails()
+        public async Task<List<string>> GetUniqueEmails()
         {
-            var matches = Collection.AsQueryable();
+            var matches = await Collection.AsQueryable().ToListAsync();
             var uniqueEmails = new List<string>();
 
             foreach (Match match in matches)
@@ -49,37 +50,37 @@ namespace Repository
             return uniqueEmails;
         }
 
-        public Match GetByTimeStamp(DateTime time)
+        public async Task<Match> GetByTimeStamp(DateTime time)
         {
             var result = Collection.AsQueryable().Where(x => x.TimeStampUtc == time);
 
-            return result.FirstOrDefault();
+            return await result.FirstOrDefaultAsync();
         }
 
-        public IEnumerable<Match> GetMatchesByTimeStamp(DateTime time)
+        public async Task<List<Match>> GetMatchesByTimeStamp(DateTime time)
         {
             var result = Collection.AsQueryable().Where(x => x.TimeStampUtc >= time);
             
-            return result;
+            return await result.ToListAsync();
         }
 
-        public List<Match> GetRecentMatches(int numberOfMatches)
+        public async Task<List<Match>> GetRecentMatches(int numberOfMatches)
         {
             var result = Collection.AsQueryable().OrderByDescending(x => x.TimeStampUtc);
             
-            return result.Take(numberOfMatches).ToList();
+            return await result.Take(numberOfMatches).ToListAsync();
         }
 
-        public List<Match> GetPlayerMatches(string email)
+        public async Task<List<Match>> GetPlayerMatches(string email)
         {
             var result = Collection.AsQueryable().Where(x => x.PlayerList.Contains(email));
             
-            return result.ToList();
+            return await result.ToListAsync();
         }
 
-        public void Upsert(Match match)
+        public async Task Upsert(Match match)
         {
-            Collection.ReplaceOne(i => i.Id == match.Id, match,
+            await Collection.ReplaceOneAsync(i => i.Id == match.Id, match,
                             new UpdateOptions { IsUpsert = true });
         }
     }

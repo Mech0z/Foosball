@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FoosballCore.OldLogic;
 using Microsoft.AspNetCore.Mvc;
 using Models.Old;
@@ -16,11 +17,11 @@ namespace FoosballCore.Controllers
         }
 
         [HttpGet]
-        public AchievementsView Index()
+        public async Task<AchievementsView> Index()
         {
             var activeSeason = _seasonLogic.GetActiveSeason();
 
-            var ach = _achievementsService.GetAchievementsView(activeSeason.Name);
+            var ach = await _achievementsService.GetAchievementsView(activeSeason.Name);
 
             return ach;
         }

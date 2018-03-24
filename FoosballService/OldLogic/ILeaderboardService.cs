@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Models.Old;
 
 namespace FoosballCore.OldLogic
 {
     public interface ILeaderboardService : ILogic
     {
-        LeaderboardView RecalculateLeaderboard(string season);
+        Task<LeaderboardView> RecalculateLeaderboard(string season);
         LeaderboardView GetActiveLeaderboard();
-        List<LeaderboardView> GetLatestLeaderboardViews();
+        Task<List<LeaderboardView>> GetLatestLeaderboardViews();
         void AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match);
     }
 }

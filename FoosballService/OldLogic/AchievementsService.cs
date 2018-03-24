@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Models.Old;
 using Repository;
 
@@ -17,20 +18,16 @@ namespace FoosballCore.OldLogic
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly IMatchRepository _matchRepository;
         
-        public AchievementsView GetAchievementsView(string season)
+        public async Task<AchievementsView> GetAchievementsView(string season)
         {
             var leaderboardView = _leaderboardViewRepository.GetLeaderboardView(season);
-            var matches = _matchRepository.GetMatches(season).OrderBy(m=>m.TimeStampUtc);
+            var matches = (await _matchRepository.GetMatches(season)).OrderBy(m=>m.TimeStampUtc).ToList();
 
-            int winStreak;
-            LeaderboardViewEntry playerWin;
-
-            GetStreak(matches, leaderboardView.Entries, true, out winStreak, out playerWin);
+            GetStreak(matches, leaderboardView.Entries, true, out var winStreak, out var playerWin);
 
             int lossStreak;
-            LeaderboardViewEntry playerLoss;
 
-            GetStreak(matches, leaderboardView.Entries, false, out lossStreak, out playerLoss);
+            GetStreak(matches, leaderboardView.Entries, false, out lossStreak, out var playerLoss);
 
             var mostGames = leaderboardView.Entries.OrderByDescending(e => e.NumberOfGames).First();
             var mostWins = leaderboardView.Entries.OrderByDescending(e => e.Wins).First();
@@ -101,7 +98,7 @@ namespace FoosballCore.OldLogic
             return view;
         }
 
-        private void GetStreak(IOrderedEnumerable<Match> matches, IEnumerable<LeaderboardViewEntry> entries, bool winStreak, out int streak, out LeaderboardViewEntry player)
+        private void GetStreak(List<Match> matches, IEnumerable<LeaderboardViewEntry> entries, bool winStreak, out int streak, out LeaderboardViewEntry player)
         {
             player = null;
             int currentStreak = 0;
@@ -132,7 +129,7 @@ namespace FoosballCore.OldLogic
             }
         }
 
-        private void GetFlawlessVictory(IOrderedEnumerable<Match> matches, List<string> winners, List<string> loosers)
+        private void GetFlawlessVictory(List<Match> matches, List<string> winners, List<string> loosers)
         {
             var orderedMatches = matches.Where(m=>m.PlayerList.Count == 4).OrderByDescending(m => m.TimeStampUtc).ToList();
             foreach (var match in orderedMatches)
@@ -166,6 +163,6 @@ namespace FoosballCore.OldLogic
 
     public interface IAchievementsService : ILogic
     {
-        AchievementsView GetAchievementsView(string season);
+        Task<AchievementsView> GetAchievementsView(string season);
     }
 }

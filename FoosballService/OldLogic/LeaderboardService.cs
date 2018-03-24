@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Models.Old;
 using Repository;
 
@@ -20,9 +21,9 @@ namespace FoosballCore.OldLogic
             _seasonLogic = seasonLogic;
         }
 
-        public LeaderboardView RecalculateLeaderboard(string season)
+        public async Task<LeaderboardView> RecalculateLeaderboard(string season)
         {
-            var matches = _matchRepository.GetMatches(season).OrderBy(x => x.TimeStampUtc);
+            var matches = (await _matchRepository.GetMatches(season)).OrderBy(x => x.TimeStampUtc);
             var leaderboardView = new LeaderboardView {SeasonName = season};
             
             foreach (var match in matches)
@@ -41,7 +42,7 @@ namespace FoosballCore.OldLogic
             throw new System.NotImplementedException();
         }
 
-        public List<LeaderboardView> GetLatestLeaderboardViews()
+        public async Task<List<LeaderboardView>> GetLatestLeaderboardViews()
         {
             var seasons = _seasonLogic.GetSeasons();
 
@@ -53,7 +54,8 @@ namespace FoosballCore.OldLogic
 
                 if (existingLeaderboard == false)
                 {
-                    latestLeaderboardViews.Add(RecalculateLeaderboard(season.Name));
+                    var leaderboardView = await RecalculateLeaderboard(season.Name);
+                    latestLeaderboardViews.Add(leaderboardView);
                 }
             }
 

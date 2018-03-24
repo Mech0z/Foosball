@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Models.Old;
 using Repository;
 
@@ -21,7 +22,7 @@ namespace FoosballCore.OldLogic
             _leaderboardViewRepository = leaderboardViewRepository;
         }
 
-        public List<PartnerPercentResult> GetPartnerWinPercent(string email, string season)
+        public async Task<List<PartnerPercentResult>> GetPartnerWinPercent(string email, string season)
         {
             var leaderboard = _leaderboardViewRepository.GetLeaderboardView(season);
             double? normalWinRate = null;
@@ -32,7 +33,7 @@ namespace FoosballCore.OldLogic
 
             var result = new List<PartnerPercentResult>();
 
-            foreach (User user in _userRepository.GetUsers())
+            foreach (User user in await _userRepository.GetUsers())
             {
                 if (user.Email != email)
                 {
@@ -45,7 +46,7 @@ namespace FoosballCore.OldLogic
                 }
             }
 
-            var matches = _matchRepository.GetMatches(season);
+            var matches = await _matchRepository.GetMatches(season);
 
             foreach (Match match in matches)
             {

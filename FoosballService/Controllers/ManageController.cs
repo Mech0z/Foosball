@@ -110,7 +110,8 @@ namespace FoosballCore.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                //return View(model);
+                throw new Exception();
             }
 
             var user = await _userManager.GetUserAsync(User);

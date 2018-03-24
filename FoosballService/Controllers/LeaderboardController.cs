@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FoosballCore.OldLogic;
 using Microsoft.AspNetCore.Mvc;
 using Models.Old;
@@ -16,9 +17,9 @@ namespace FoosballCore.Controllers
 
         // GET: /<controller>/
         [HttpGet]
-        public IEnumerable<LeaderboardView> Index()
+        public async Task<List<LeaderboardView>> Index()
         {
-                return _leaderboardService.GetLatestLeaderboardViews();
+                return await _leaderboardService.GetLatestLeaderboardViews();
         }
     }
 }

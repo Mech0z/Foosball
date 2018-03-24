@@ -28,17 +28,18 @@ namespace FoosballCore.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Match> GetPlayerMatches(string email)
+        public async Task<List<Match>> GetPlayerMatches(string email)
         {
-            return _matchRepository.GetPlayerMatches(email).OrderByDescending(x => x.TimeStampUtc);
+            var matches = await _matchRepository.GetPlayerMatches(email);
+            return matches.OrderByDescending(x => x.TimeStampUtc).ToList();
         }
 
         [HttpGet]
-        public List<PartnerPercentResult> GetPlayerPartnerResults(string email)
+        public async Task<List<PartnerPercentResult>> GetPlayerPartnerResults(string email)
         {
             var activeSeason = _seasonLogic.GetActiveSeason();
 
-            return _matchupHistoryCreator.GetPartnerWinPercent(email, activeSeason.Name);
+            return await _matchupHistoryCreator.GetPartnerWinPercent(email, activeSeason.Name);
         }
 
         [HttpGet]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using FoosballCore.OldLogic;
 using FoosballCore.RequestResponse;
 using Microsoft.AspNetCore.Authorization;
@@ -34,11 +35,11 @@ namespace FoosballCore.Controllers
 
         // GET: /api/Match/GetAll
         [HttpGet]
-        public IEnumerable<Match> GetAll()
+        public async Task<IEnumerable<Match>> GetAll()
         {
             try
             {
-                var matches = _matchRepository.GetMatches(null);
+                var matches = await _matchRepository.GetMatches(null);
 
                 return matches;
             }
@@ -51,14 +52,14 @@ namespace FoosballCore.Controllers
 
         // GET: /api/Match/LastGames?numberOfMatches=10
         [HttpGet]
-        public IEnumerable<Match> LastGames(int numberOfMatches)
+        public async Task<IEnumerable<Match>> LastGames(int numberOfMatches)
         {
-            return _matchRepository.GetRecentMatches(numberOfMatches);
+            return await _matchRepository.GetRecentMatches(numberOfMatches);
         }
 
         [HttpPost]
         [Authorize(Roles = "Player")]
-        public IActionResult SaveMatch(SaveMatchesRequest saveMatchesRequest)
+        public async Task<IActionResult> SaveMatch(SaveMatchesRequest saveMatchesRequest)
         {
             if (saveMatchesRequest == null)
             {
@@ -91,13 +92,13 @@ namespace FoosballCore.Controllers
                 
                 match.SeasonName = currentSeason.Name;
 
-                var leaderboards = _leaderboardService.GetLatestLeaderboardViews();
+                var leaderboards = await _leaderboardService.GetLatestLeaderboardViews();
 
                 var activeLeaderboard = leaderboards.SingleOrDefault(x => x.SeasonName == currentSeason.Name);
 
                 _leaderboardService.AddMatchToLeaderboard(activeLeaderboard, match);
 
-                _matchRepository.Upsert(match);
+                await _matchRepository.Upsert(match);
 
                 _leaderboardViewRepository.Upsert(activeLeaderboard);
             }
@@ -144,9 +145,9 @@ namespace FoosballCore.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Match> TodaysMatches()
+        public async Task<IEnumerable<Match>> TodaysMatches()
         {
-            return _matchRepository.GetMatchesByTimeStamp(DateTime.Today);
+            return await _matchRepository.GetMatchesByTimeStamp(DateTime.Today);
         }
     }
 }
