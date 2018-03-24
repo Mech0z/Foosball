@@ -5,6 +5,6 @@ namespace Repository
 {
     public interface IIdentityUserRepository
     {
-        Task<List<string>> GetIdentityUsernames();
+        Task<List<string>> GetIdentityEmails();
     }
 }

@@ -1,45 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using FoosballCore.RequestResponse;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Models;
-using Models.Old;
 using Repository;
-using IdentityUser = Microsoft.AspNetCore.Identity.MongoDB.IdentityUser;
 
 namespace FoosballCore.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Administration")]
-    [Authorize(Roles = "Admin")]
+    [Route("api/[controller]/[action]")]
+    [Authorize(Roles= "Admin")]
     public class AdministrationController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserRepository _userRepository;
+        private readonly IUserMappingRepository _userMappingRepository;
+        private readonly IIdentityUserRepository _identityUserRepository;
 
-        public AdministrationController(UserManager<Microsoft.AspNetCore.Identity.MongoDB.IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore, IUserRepository userRepository)
+        public AdministrationController(
+            IUserRepository userRepository,
+            IUserMappingRepository userMappingRepository,
+            IIdentityUserRepository identityUserRepository)
         {
-            _userManager = userManager;
-            _userStore = userStore;
             _userRepository = userRepository;
+            _userMappingRepository = userMappingRepository;
+            _identityUserRepository = identityUserRepository;
         }
 
-        //public async IList<CombinedUser> GetUsers()
-        //{
-        //    var combinedUsers = new List<CombinedUser>();
-
-        //    var internalUsers = await _userRepository.GetUsers();
-        //    var identityUsers = await _userManager.Users.ToListAsync();
-
-        //    foreach (User internalUser in internalUsers)
-        //    {
-                
-        //    }
-
-        //    return combinedUsers;
-        //}
+        [HttpGet]
+        public async Task<GetUserMappingsResponse> GetUserMappings()
+        {
+            var normalUsers = await _userRepository.GetUsersAsync();
+            var userMappings = await _userMappingRepository.GetUserMappings();
+            var identityUsernames = await _identityUserRepository.GetIdentityEmails();
+            
+            return new GetUserMappingsResponse
+            {
+                NormalUsernames = normalUsers.Select(x => x.Username).ToList(),
+                UserMappings = userMappings,
+                IdentityEmails = identityUsernames 
+            };
+        }
     }
 }

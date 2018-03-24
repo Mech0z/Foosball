@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FoosballCore.OldLogic;
 using FoosballCore.Services;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -36,6 +37,8 @@ namespace FoosballCore
             services.AddScoped<ISeasonRepository, SeasonRepository>();
             services.AddScoped<IMatchupResultRepository, MatchupResultRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserMappingRepository, UserMappingRepository>();
+            services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
 
             //Logic
             services.AddScoped<IAchievementsService, AchievementsService>();
@@ -50,7 +53,7 @@ namespace FoosballCore
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }));
-
+            
             services.AddMvc();
         }
 
@@ -68,7 +71,11 @@ namespace FoosballCore
                 //app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseCors("MyPolicy");
+#if DEBUG
+            TelemetryConfiguration.Active.DisableTelemetry = true;
+#endif
+
+            //app.UseCors("MyPolicy");
 
             app.UseStaticFiles();
 

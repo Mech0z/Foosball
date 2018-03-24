@@ -45,7 +45,7 @@ namespace FoosballCore.Controllers
         [HttpGet]
         public async Task<IEnumerable<User>> GetUsers()
         {
-            return await _userRepository.GetUsers();
+            return await _userRepository.GetUsersAsync();
         }
 
         //[HttpPost]

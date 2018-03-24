@@ -15,11 +15,10 @@ namespace FoosballCore.Controllers
             _leaderboardService = leaderboardService;
         }
 
-        // GET: /<controller>/
         [HttpGet]
         public async Task<List<LeaderboardView>> Index()
         {
-                return await _leaderboardService.GetLatestLeaderboardViews();
+            return await _leaderboardService.GetLatestLeaderboardViews();
         }
     }
 }

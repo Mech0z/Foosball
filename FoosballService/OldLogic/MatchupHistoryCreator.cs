@@ -33,7 +33,7 @@ namespace FoosballCore.OldLogic
 
             var result = new List<PartnerPercentResult>();
 
-            foreach (User user in await _userRepository.GetUsers())
+            foreach (User user in await _userRepository.GetUsersAsync())
             {
                 if (user.Email != email)
                 {

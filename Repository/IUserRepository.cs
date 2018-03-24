@@ -6,7 +6,7 @@ namespace Repository
 {
     public interface IUserRepository
     {
-        Task<List<User>> GetUsers();
+        Task<List<User>> GetUsersAsync();
         //void AddUser(User user);
         //User GetUser(string email);
         //string Login(User inputUser);

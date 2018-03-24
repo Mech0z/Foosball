@@ -14,7 +14,7 @@ namespace Repository
         {
         }
 
-        public async Task<List<User>> GetUsers()
+        public async Task<List<User>> GetUsersAsync()
         {
             var query = Collection.AsQueryable();
             
