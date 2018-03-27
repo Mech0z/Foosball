@@ -16,7 +16,8 @@ using IdentityUser = Microsoft.AspNetCore.Identity.MongoDB.IdentityUser;
 namespace FoosballCore.Controllers
 {
     [Authorize]
-    [Route("[controller]/[action]")]
+    [Produces("application/json")]
+    [Route("api/[controller]/[action]")]
     public class ManageController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;

@@ -6,6 +6,8 @@ using Models.Old;
 
 namespace FoosballCore.Controllers
 {
+    [Produces("application/json")]
+    [Route("api/[controller]/[action]")]
     public class LeaderboardController : Controller
     {
         private readonly ILeaderboardService _leaderboardService;

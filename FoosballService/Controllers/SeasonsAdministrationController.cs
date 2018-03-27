@@ -7,6 +7,8 @@ using Models.Old;
 
 namespace FoosballCore.Controllers
 {
+    [Produces("application/json")]
+    [Route("api/[controller]/[action]")]
     public class SeasonsAdministrationController : Controller
     {
         private readonly ISeasonLogic _seasonLogic;

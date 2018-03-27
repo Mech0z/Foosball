@@ -12,6 +12,8 @@ using Repository;
 
 namespace FoosballCore.Controllers
 {
+    [Produces("application/json")]
+    [Route("api/[controller]/[action]")]
     public class MatchController : Controller
     {
         private readonly ILeaderboardService _leaderboardService;

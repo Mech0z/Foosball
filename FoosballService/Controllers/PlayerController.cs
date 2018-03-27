@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FoosballCore.OldLogic;
-using FoosballCore.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
 using Models.Old;
 using Repository;
 
 namespace FoosballCore.Controllers
 {
+    [Produces("application/json")]
+    [Route("api/[controller]/[action]")]
     public class PlayerController : Controller
     {
         private readonly IMatchRepository _matchRepository;
