@@ -1,25 +1,27 @@
-﻿using System.Linq;
-using FoosballCore.OldLogic;
-using FoosballCore.Services;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Authentication.OAuth;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Foosball.Logic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Owin;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Models;
 using Repository;
+using Swashbuckle.AspNetCore.Swagger;
 
-namespace FoosballCore
+namespace Foosball
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
         }
 
         public IConfiguration Configuration { get; }
@@ -28,19 +30,19 @@ namespace FoosballCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
-            services.AddIdentityWithMongoStores(Configuration.GetConnectionString("DefaultConnectionMongoDB"))
-                .AddDefaultTokenProviders();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
-            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
+
             //Repository
             services.AddScoped<ILeaderboardViewRepository, LeaderboardViewRepository>();
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<ISeasonRepository, SeasonRepository>();
             services.AddScoped<IMatchupResultRepository, MatchupResultRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserMappingRepository, UserMappingRepository>();
             services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
 
             //Logic
@@ -56,39 +58,26 @@ namespace FoosballCore
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }));
-            
-            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
-                //app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
-#if DEBUG
-            TelemetryConfiguration.Active.DisableTelemetry = true;
-#endif
-
-            //app.UseCors("MyPolicy");
-
-            app.UseStaticFiles();
-
-            app.UseAuthentication();
-
-            app.UseMvc(routes =>
+            app.UseHttpsRedirection();
+            app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
         }
     }
