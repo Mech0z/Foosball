@@ -9,6 +9,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class SeasonsAdministrationController : Controller
     {
         private readonly ISeasonLogic _seasonLogic;

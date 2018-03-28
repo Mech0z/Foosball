@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
+using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
 using Models.Old;
 using Repository;
@@ -10,6 +11,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class PlayerController : Controller
     {
         private readonly IMatchRepository _matchRepository;
@@ -44,9 +46,10 @@ namespace Foosball.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<UserResponse>> GetUsers()
         {
-            return await _userRepository.GetUsersAsync();
+            var users = await _userRepository.GetUsersAsync();
+            return users.Select(user => new UserResponse(user));
         }
 
         //[HttpPost]

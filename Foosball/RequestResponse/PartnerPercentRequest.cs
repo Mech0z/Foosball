@@ -4,6 +4,6 @@ namespace Foosball.RequestResponse
 {
     public class PartnerPercentRequest
     {
-        public User User { get; set; }
+        public UserResponse User { get; set; }
     }
 }

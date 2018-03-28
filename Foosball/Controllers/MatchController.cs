@@ -14,6 +14,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class MatchController : Controller
     {
         private readonly ILeaderboardService _leaderboardService;

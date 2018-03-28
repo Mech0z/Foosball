@@ -10,6 +10,7 @@ namespace Foosball.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [Authorize(Roles= "Admin")]
+    [ApiController]
     public class AdministrationController : Controller
     {
         private readonly IUserRepository _userRepository;
