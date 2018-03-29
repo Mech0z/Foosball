@@ -16,7 +16,6 @@ namespace Repository
         {
         }
 
-
         public async Task<LoginResult> VerifyLogin(string email, string token, string deviceName)
         {
             var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
@@ -26,8 +25,11 @@ namespace Repository
 
             if (loginToken == null || loginToken.Expirytime < DateTime.Now) return new LoginResult{LoginFailed = true};
 
-            loginToken.Expirytime = DateTime.Now.AddDays(14);
-            
+            if(loginToken.Expirytime > DateTime.Now.AddHours(1))
+            {
+                loginToken.Expirytime = DateTime.Now.AddDays(14);
+            }
+
             await Collection.ReplaceOneAsync(i => i.Id == existingUserLogin.Id, existingUserLogin);
             
             return new LoginResult{Success = true, LoginToken = loginToken};
@@ -43,7 +45,7 @@ namespace Repository
             var tokenGuid = Guid.NewGuid();
             var existingToken = existingUserLogin.Tokens.SingleOrDefault(x => x.DeviceName == deviceName);
             
-            var expirytime = rememberMe ? DateTime.Now.AddDays(14) : DateTime.Now.AddHours(1);
+            var expirytime = rememberMe ? DateTime.Now.AddDays(14) : DateTime.Now.AddMinutes(15);
             
             if (existingToken != null)
             {
