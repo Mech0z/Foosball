@@ -10,18 +10,6 @@ using MongoDB.Driver.Linq;
 
 namespace Repository
 {
-    public interface IUserLoginInfoRepository
-    {
-        Task<LoginResult> VerifyLogin(string email, string token, string deviceName);
-        Task<LoginResult> Login(string email, string password, bool rememberMe, string deviceName);
-        Task Logout(string email, string token, string deviceName);
-        Task<bool> ChangePassword(string email, string oldPassword, string newPassword);
-        Task<bool> AdminChangePassword(string email, string newPassword);
-        LoginToken CreateUser(string email, string token, string deviceName);
-        Task<List<string>> GetUserRoles(string email);
-        Task<List<UserRole>> GetAllUserRoles();
-    }
-
     public class UserLoginInfoRepository : BaseRepository<UserLoginInfo>, IUserLoginInfoRepository
     {
         public UserLoginInfoRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "UserLoginInfos")
@@ -150,6 +138,18 @@ namespace Repository
             var userLoginInfos = await Collection.AsQueryable().ToListAsync();
 
             return userLoginInfos.Select(x => new UserRole(x)).ToList();
+        }
+
+        public async Task<bool> UpdateUserRoles(string email, List<string> roles)
+        {
+            var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
+
+            if (existingUserLogin == null) {return false;}
+
+            existingUserLogin.Roles = roles;
+            await Collection.ReplaceOneAsync(i => i.Id == existingUserLogin.Id, existingUserLogin);
+
+            return true;
         }
     }
 }

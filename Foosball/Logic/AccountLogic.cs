@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Foosball.RequestResponse;
 using Models.Old;
@@ -56,6 +57,18 @@ namespace Foosball.Logic
             if (existingUsers.Any(x => x.Email == email))
             {
                 return await _userLoginInfoRepository.AdminChangePassword(email, newPassword);
+            }
+            
+            return false;
+        }
+
+        public async Task<bool> ChangeUserRoles(string userEmail, List<string> updatedRoles)
+        {
+            var existingUsers = await _userRepository.GetUsersAsync();
+
+            if (existingUsers.Any(x => x.Email == userEmail))
+            {
+                return await _userLoginInfoRepository.UpdateUserRoles(userEmail, updatedRoles);
             }
             
             return false;

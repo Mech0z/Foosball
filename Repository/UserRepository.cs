@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Models;
 using Models.Old;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -17,7 +18,6 @@ namespace Repository
         public async Task<List<User>> GetUsersAsync()
         {
             var query = Collection.AsQueryable();
-            
             var users = await query.ToListAsync();
 
             foreach (User user in users)

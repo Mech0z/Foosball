@@ -39,5 +39,11 @@ namespace Foosball.Controllers
         {
             return await _accountLogic.ChangeUserPassword(request.UserEmail, request.NewPassword);
         }
+
+        [HttpPost]
+        public async Task<bool> ChangeUserRoles(ChangeUserRolesRequest request)
+        {
+            return await _accountLogic.ChangeUserRoles(request.UserEmail, request.Roles);
+        }
     }
 }

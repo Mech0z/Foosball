@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Foosball.RequestResponse;
 using Models.Old;
 
@@ -10,5 +11,6 @@ namespace Foosball.Logic
         Task<LoginResult> ValidateLogin(BaseRequest request);
         Task<GetUserMappingsResponse> GetUserMappings(GetUserMappingsRequest request);
         Task<bool> ChangeUserPassword(string email, string newPassword);
+        Task<bool> ChangeUserRoles(string userEmail, List<string> updatedRoles);
     }
 }
