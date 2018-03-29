@@ -43,13 +43,14 @@ namespace Foosball
             services.AddScoped<ISeasonRepository, SeasonRepository>();
             services.AddScoped<IMatchupResultRepository, MatchupResultRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
+            services.AddScoped<IUserLoginInfoRepository, UserLoginInfoRepository>();
 
             //Logic
             services.AddScoped<IAchievementsService, AchievementsService>();
             services.AddScoped<ILeaderboardService, LeaderboardService>();
             services.AddScoped<IMatchupHistoryCreator, MatchupHistoryCreator>();
             services.AddScoped<ISeasonLogic, SeasonLogic>();
+            services.AddScoped<IAccountLogic, AccountLogic>();
             services.AddScoped<IRating, EloRating>();
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

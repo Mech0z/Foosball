@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Foosball.Logic;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,32 +11,33 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles= "Admin")]
+    //[Authorize(Roles= "Admin")]
     [ApiController]
     public class AdministrationController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IIdentityUserRepository _identityUserRepository;
+        private readonly IAccountLogic _accountLogic;
 
-        public AdministrationController(
-            IUserRepository userRepository,
-            IIdentityUserRepository identityUserRepository)
+        public AdministrationController(IAccountLogic accountLogic)
         {
-            _userRepository = userRepository;
-            _identityUserRepository = identityUserRepository;
+            _accountLogic = accountLogic;
         }
 
-        [HttpGet]
-        public async Task<GetUserMappingsResponse> GetUserMappings()
+        [HttpPost]
+        public async Task<GetUserMappingsResponse> GetUserMappings(GetUserMappingsRequest request)
         {
-            var normalUsers = await _userRepository.GetUsersAsync();
-            var identityUsernames = await _identityUserRepository.GetIdentityEmails();
+            //var loginResult = await _accountLogic.ValidateLogin(request);
+            //if (loginResult.Success)
+            //{
+                return await _accountLogic.GetUserMappings(request);
+            //}
             
-            return new GetUserMappingsResponse
-            {
-                NormalUsernames = normalUsers.Select(x => x.Username).ToList(),
-                IdentityEmails = identityUsernames 
-            };
+            throw new AccessViolationException();
+        }
+
+        [HttpPost]
+        public async Task<bool> ChangeUserPassword(ChangeUserPasswordRequest request)
+        {
+            return await _accountLogic.ChangeUserPassword(request.UserEmail, request.NewPassword);
         }
     }
 }

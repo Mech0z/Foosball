@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
-using Models;
 
 namespace Foosball.RequestResponse
 {
     public class GetUserMappingsResponse
     {
-        public List<UserMapping> UserMappings { get; set; }
-        public List<string> IdentityEmails { get; set; }
-        public List<string> NormalUsernames { get; set; }
+        public GetUserMappingsResponse()
+        {
+            Users = new List<UserMappingsResponseEntry>();
+        }
+
+        public List<UserMappingsResponseEntry> Users { get; set; }
     }
 }

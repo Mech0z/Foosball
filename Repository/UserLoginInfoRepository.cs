@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -15,7 +16,10 @@ namespace Repository
         Task<LoginResult> Login(string email, string password, bool rememberMe, string deviceName);
         Task Logout(string email, string token, string deviceName);
         Task<bool> ChangePassword(string email, string oldPassword, string newPassword);
+        Task<bool> AdminChangePassword(string email, string newPassword);
         LoginToken CreateUser(string email, string token, string deviceName);
+        Task<List<string>> GetUserRoles(string email);
+        Task<List<UserRole>> GetAllUserRoles();
     }
 
     public class UserLoginInfoRepository : BaseRepository<UserLoginInfo>, IUserLoginInfoRepository
@@ -32,7 +36,7 @@ namespace Repository
             var loginToken =
                 existingUserLogin?.Tokens.SingleOrDefault(x => x.DeviceName == deviceName && x.Token == token);
 
-            if (loginToken == null || loginToken.Expirytime < DateTime.Now) return new LoginResult();
+            if (loginToken == null || loginToken.Expirytime < DateTime.Now) return new LoginResult{LoginFailed = true};
 
             loginToken.Expirytime = DateTime.Now.AddDays(14);
             
@@ -105,9 +109,47 @@ namespace Repository
             return true;
         }
 
+        public async Task<bool> AdminChangePassword(string email, string newPassword)
+        {
+            var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
+            
+            var newHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
+            if (existingUserLogin == null)
+            {
+                var newUserLogin = new UserLoginInfo
+                {
+                    Email = email,
+                    HashedPassword = newHash
+                };
+                await Collection.InsertOneAsync(newUserLogin);
+            }
+            else
+            {
+                existingUserLogin.HashedPassword = newHash;
+                await Collection.ReplaceOneAsync(i => i.Id == existingUserLogin.Id, existingUserLogin);
+            }
+            
+            return true;
+        }
+
         public LoginToken CreateUser(string email, string token, string deviceName)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<string>> GetUserRoles(string email)
+        {
+            var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
+
+            return existingUserLogin?.Roles;
+        }
+
+        public async Task<List<UserRole>> GetAllUserRoles()
+        {
+            var userLoginInfos = await Collection.AsQueryable().ToListAsync();
+
+            return userLoginInfos.Select(x => new UserRole(x)).ToList();
         }
     }
 }

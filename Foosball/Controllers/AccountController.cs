@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Foosball.Logic;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,32 @@ namespace Foosball.Controllers
     [ApiController]
     public class AccountController : Controller
     {
-//        public async Task<IActionResult<LoginResponse>> Login(LoginRequest loginRequest)
-//        {
-//            
-//        }
+        private readonly IAccountLogic _accountLogic;
+
+        public AccountController(IAccountLogic accountLogic)
+        {
+            _accountLogic = accountLogic;
+        }
+
+        [HttpPost]
+        public async Task<LoginResponse> Login(LoginRequest loginRequest)
+        {
+            var result = await _accountLogic.Login(loginRequest.Email,
+                loginRequest.Password,
+                loginRequest.RememberMe,
+                loginRequest.DeviceName);
+
+            if (result.Success)
+            {
+                return new LoginResponse
+                {
+                    LoginFailed = false,
+                    ExpiryTime = result.LoginToken.Expirytime,
+                    Token = result.LoginToken.Token
+                };
+            }
+
+            return new LoginResponse {LoginFailed = true};
+        }
     }
 }

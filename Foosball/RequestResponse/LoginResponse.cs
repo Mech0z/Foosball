@@ -6,5 +6,6 @@ namespace Foosball.RequestResponse
     {
         public DateTime ExpiryTime { get; set; }
         public string Token { get; set; }
+        public bool LoginFailed { get; set; }
     }
 }
