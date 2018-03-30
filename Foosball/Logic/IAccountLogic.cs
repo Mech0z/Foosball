@@ -12,5 +12,6 @@ namespace Foosball.Logic
         Task<GetUserMappingsResponse> GetUserMappings(GetUserMappingsRequest request);
         Task<bool> ChangeUserPassword(string email, string newPassword);
         Task<bool> ChangeUserRoles(string userEmail, List<string> updatedRoles);
+        Task<bool> Logout(BaseRequest request);
     }
 }

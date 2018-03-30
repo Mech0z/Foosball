@@ -69,7 +69,7 @@ namespace Repository
             return new LoginResult {Success = true, LoginToken = newToken};
         }
 
-        public async Task Logout(string email, string token, string deviceName)
+        public async Task<bool> Logout(string email, string token, string deviceName)
         {
             var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
 
@@ -81,6 +81,8 @@ namespace Repository
                 existingUserLogin.Tokens.Remove(existingToken);
                 await Collection.ReplaceOneAsync(i => i.Id == existingUserLogin.Id, existingUserLogin);
             }
+
+            return true;
         }
 
         public async Task<bool> ChangePassword(string email, string oldPassword, string newPassword)

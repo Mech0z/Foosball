@@ -37,5 +37,24 @@ namespace Foosball.Controllers
 
             return new LoginResponse {LoginFailed = true};
         }
+
+        [HttpPost]
+        public async Task<LoginResponse> ValidateLogin(BaseRequest request)
+        {
+            var result = await _accountLogic.ValidateLogin(request);
+
+            return new LoginResponse
+            {
+                Token = result.LoginToken.Token,
+                ExpiryTime = result.LoginToken.Expirytime,
+                LoginFailed = result.LoginFailed
+            };
+        }
+
+        [HttpPost]
+        public async Task<bool> Logout(BaseRequest request)
+        {
+            return await _accountLogic.Logout(request);
+        }
     }
 }

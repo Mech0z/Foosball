@@ -73,5 +73,10 @@ namespace Foosball.Logic
             
             return false;
         }
+
+        public async Task<bool> Logout(BaseRequest request)
+        {
+            return await _userLoginInfoRepository.Logout(request.Email, request.Token, request.DeviceName);
+        }
     }
 }
