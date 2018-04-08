@@ -8,7 +8,7 @@ namespace Repository
     {
         Task<LoginResult> VerifyLogin(string email, string token, string deviceName);
         Task<LoginResult> Login(string email, string password, bool rememberMe, string deviceName);
-        Task Logout(string email, string token, string deviceName);
+        Task<bool> Logout(string email, string token, string deviceName);
         Task<bool> ChangePassword(string email, string oldPassword, string newPassword);
         Task<bool> AdminChangePassword(string email, string newPassword);
         LoginToken CreateUser(string email, string token, string deviceName);
