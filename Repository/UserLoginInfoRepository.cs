@@ -32,7 +32,7 @@ namespace Repository
 
             await Collection.ReplaceOneAsync(i => i.Id == existingUserLogin.Id, existingUserLogin);
             
-            return new LoginResult{Success = true, LoginToken = loginToken};
+            return new LoginResult{Success = true, LoginToken = loginToken, Roles = existingUserLogin.Roles};
         }
 
         public async Task<LoginResult> Login(string email, string password, bool rememberMe, string deviceName)

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repository;
 
 namespace Foosball.Controllers
 {
@@ -25,25 +22,37 @@ namespace Foosball.Controllers
         [HttpPost]
         public async Task<GetUserMappingsResponse> GetUserMappings(GetUserMappingsRequest request)
         {
-            //var loginResult = await _accountLogic.ValidateLogin(request);
-            //if (loginResult.Success)
-            //{
+            var loginResult = await _accountLogic.ValidateLogin(request, "Admin");
+            if (loginResult.Success)
+            {
                 return await _accountLogic.GetUserMappings(request);
-            //}
-            
+            }
+
             throw new AccessViolationException();
         }
 
         [HttpPost]
         public async Task<bool> ChangeUserPassword(ChangeUserPasswordRequest request)
         {
-            return await _accountLogic.ChangeUserPassword(request.UserEmail, request.NewPassword);
+            var loginResult = await _accountLogic.ValidateLogin(request, "Admin");
+            if (loginResult.Success)
+            {
+                return await _accountLogic.ChangeUserPassword(request.UserEmail, request.NewPassword);
+            }
+
+            throw new AccessViolationException();
         }
 
         [HttpPost]
         public async Task<bool> ChangeUserRoles(ChangeUserRolesRequest request)
         {
-            return await _accountLogic.ChangeUserRoles(request.UserEmail, request.Roles);
+            var loginResult = await _accountLogic.ValidateLogin(request, "Admin");
+            if (loginResult.Success)
+            {
+                return await _accountLogic.ChangeUserRoles(request.UserEmail, request.Roles);
+            }
+
+            throw new AccessViolationException();
         }
     }
 }

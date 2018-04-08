@@ -20,6 +20,7 @@ namespace Foosball.Controllers
         private readonly ILeaderboardService _leaderboardService;
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly ISeasonLogic _seasonLogic;
+        private readonly IAccountLogic _accountLogic;
         private readonly IMatchRepository _matchRepository;
         private readonly IMatchupResultRepository _matchupResultRepository;
 
@@ -27,13 +28,15 @@ namespace Foosball.Controllers
             IMatchupResultRepository matchupResultRepository,
             ILeaderboardService leaderboardService,
             ILeaderboardViewRepository leaderboardViewRepository,
-            ISeasonLogic seasonLogic)
+            ISeasonLogic seasonLogic,
+            IAccountLogic accountLogic)
         {
             _matchRepository = matchRepository;
             _matchupResultRepository = matchupResultRepository;
             _leaderboardService = leaderboardService;
             _leaderboardViewRepository = leaderboardViewRepository;
             _seasonLogic = seasonLogic;
+            _accountLogic = accountLogic;
         }
 
         // GET: /api/Match/GetAll
@@ -61,18 +64,17 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Player")]
         public async Task<IActionResult> SaveMatch(SaveMatchesRequest saveMatchesRequest)
         {
             if (saveMatchesRequest == null)
             {
                 return BadRequest();
             }
-            //var validated = _userRepository.Validate(saveMatchesRequest.User);
-            //if (!validated)
-            //{
-            //    return Unauthorized();
-            //}
+            var loginResult = await _accountLogic.ValidateLogin(saveMatchesRequest, "Player");
+            if (loginResult.LoginFailed)
+            {
+                return Unauthorized();
+            }
 
             var seasons = _seasonLogic.GetSeasons();
 
