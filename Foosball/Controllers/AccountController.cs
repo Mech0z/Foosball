@@ -31,7 +31,8 @@ namespace Foosball.Controllers
                 {
                     LoginFailed = false,
                     ExpiryTime = result.LoginToken.Expirytime,
-                    Token = result.LoginToken.Token
+                    Token = result.LoginToken.Token,
+                    Roles = result.Roles
                 };
             }
 

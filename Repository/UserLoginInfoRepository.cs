@@ -58,7 +58,7 @@ namespace Repository
                 {
                     Token = tokenGuid.ToString(),
                     DeviceName = deviceName,
-                    Expirytime = expirytime
+                    Expirytime = expirytime,
                 });
             }
             
@@ -66,7 +66,7 @@ namespace Repository
 
             var newToken = existingUserLogin.Tokens.SingleOrDefault(x => x.Token == tokenGuid.ToString());
             
-            return new LoginResult {Success = true, LoginToken = newToken};
+            return new LoginResult {Success = true, LoginToken = newToken, Roles = existingUserLogin.Roles};
         }
 
         public async Task<bool> Logout(string email, string token, string deviceName)

@@ -76,6 +76,14 @@ namespace Foosball.Controllers
                 return Unauthorized();
             }
 
+            foreach (var match in saveMatchesRequest.Matches)
+            {
+                if (!match.PlayerList.Contains(saveMatchesRequest.Email) && !loginResult.Roles.Contains("Admin"))
+                {
+                    return Unauthorized();
+                }
+            }
+
             var seasons = _seasonLogic.GetSeasons();
 
             if (seasons.All(x => x.EndDate != null))
