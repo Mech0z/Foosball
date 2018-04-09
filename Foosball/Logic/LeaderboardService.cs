@@ -29,7 +29,7 @@ namespace Foosball.Logic
             foreach (var match in matches)
             {
                 AddMatchToLeaderboard(leaderboardView, match);
-                _matchRepository.Upsert(match);
+                await _matchRepository.Upsert(match);
             }
             leaderboardView.Entries = leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList();
 

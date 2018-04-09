@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Old;
 using Repository;
@@ -98,6 +97,7 @@ namespace Foosball.Controllers
             //Sat i AddMatch java
             foreach (var match in matches)
             {
+                match.SubmittedBy = saveMatchesRequest.Email;
                 if (match.TimeStampUtc == DateTime.MinValue)
                 {
                     match.TimeStampUtc = DateTime.UtcNow;

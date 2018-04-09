@@ -6,11 +6,6 @@ namespace Models.Old
 {
     public class Match
     {
-        public Match()
-        {
-            IsThisRandom = true;
-        }
-        
         public Guid Id { get; set; }
 
         public DateTime TimeStampUtc { get; set; }
@@ -23,14 +18,12 @@ namespace Models.Old
         /// Team 2 Offence
         /// </summary>
         public List<string> PlayerList { get; set; }
-
+        
         /// <summary>
         /// True means first player in list is defence and second is offence
         /// </summary>
         public bool StaticFormationTeam1 { get; set; }
         public bool StaticFormationTeam2 { get; set; }
-
-        public bool IsThisRandom { get; set; }
 
         public int Team1HashCode
         {
@@ -56,5 +49,7 @@ namespace Models.Old
         public int? Points { get; set; }
 
         public String SeasonName { get; set; }
+
+        public string SubmittedBy { get; set; }
     }
 }
