@@ -113,7 +113,7 @@ namespace Foosball.Controllers
 
                 await _matchRepository.Upsert(match);
 
-                _leaderboardViewRepository.Upsert(activeLeaderboard);
+                await _leaderboardViewRepository.Upsert(activeLeaderboard);
             }
             
             return Ok();

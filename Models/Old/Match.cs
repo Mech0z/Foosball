@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Models.Old
 {
+    [BsonIgnoreExtraElements]
     public class Match
     {
         public Guid Id { get; set; }

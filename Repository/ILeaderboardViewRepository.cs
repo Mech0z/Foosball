@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Models.Old;
 
 namespace Repository
@@ -7,6 +8,6 @@ namespace Repository
     {
         LeaderboardView GetLeaderboardView(string seasonName);
         List<LeaderboardView> GetLeaderboardViews();
-        void Upsert(LeaderboardView view);
+        Task Upsert(LeaderboardView view);
     }
 }

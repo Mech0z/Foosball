@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Models;
 using Models.Old;
@@ -23,10 +25,16 @@ namespace Repository
             return query.ToList();
         }
 
-        public void Upsert(MatchupResult matchupResult)
+        public async Task Upsert(MatchupResult matchupResult)
         {
-            Collection.ReplaceOne(i => i.Id == matchupResult.Id, matchupResult,
-                            new UpdateOptions { IsUpsert = true });
+            if (matchupResult.Id == Guid.Empty)
+            {
+                await Collection.InsertOneAsync(matchupResult);
+            }
+            else
+            {
+                await Collection.ReplaceOneAsync(i => i.Id == matchupResult.Id, matchupResult);
+            }
         }
     }
 }

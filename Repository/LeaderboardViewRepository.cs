@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 using Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq;
+using System.Threading.Tasks;
 using Models.Old;
 
 namespace Repository
@@ -35,10 +37,16 @@ namespace Repository
             return query.ToList();
         }
 
-        public void Upsert(LeaderboardView view)
+        public async Task Upsert(LeaderboardView view)
         {
-            Collection.ReplaceOne(i => i.Id == view.Id, view,
-                            new UpdateOptions { IsUpsert = true });
+            if (view.Id == Guid.Empty)
+            {
+                await Collection.InsertOneAsync(view);
+            }
+            else
+            {
+                await Collection.ReplaceOneAsync(i => i.Id == view.Id, view);
+            }
         }
     }
 }

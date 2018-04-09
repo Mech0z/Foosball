@@ -89,7 +89,7 @@ namespace Foosball.Logic
             }
         }
 
-        public void AddMatch(Match match)
+        public async Task AddMatch(Match match)
         {
             //Sort
             var sortedUserlist = match.PlayerList.OrderBy(x => x).ToList();
@@ -126,7 +126,7 @@ namespace Foosball.Logic
             if (correctMatchupResult != null)
             {
                 AddMatchupResult(correctMatchupResult, match);
-                _matchupResultRepository.Upsert(correctMatchupResult);
+                await _matchupResultRepository.Upsert(correctMatchupResult);
             }
             else
             {
@@ -139,7 +139,7 @@ namespace Foosball.Logic
                     Team2Wins = 0,
                     UserList = match.PlayerList
                 };
-                _matchupResultRepository.Upsert(matchup);
+                await _matchupResultRepository.Upsert(matchup);
             }
         }
 

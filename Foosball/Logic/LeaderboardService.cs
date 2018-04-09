@@ -33,7 +33,7 @@ namespace Foosball.Logic
             }
             leaderboardView.Entries = leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList();
 
-            _leaderboardViewRepository.Upsert(leaderboardView);
+            await _leaderboardViewRepository.Upsert(leaderboardView);
             return leaderboardView;
         }
 

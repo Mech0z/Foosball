@@ -66,9 +66,9 @@ namespace Repository
 
         public async Task<List<Match>> GetRecentMatches(int numberOfMatches)
         {
-            var result = Collection.AsQueryable().OrderByDescending(x => x.TimeStampUtc);
+            var result = Collection.AsQueryable().OrderByDescending(x => x.TimeStampUtc).Take(numberOfMatches);
             
-            return await result.Take(numberOfMatches).ToListAsync();
+            return await result.ToListAsync();
         }
 
         public async Task<List<Match>> GetPlayerMatches(string email)
@@ -80,8 +80,14 @@ namespace Repository
 
         public async Task Upsert(Match match)
         {
-            await Collection.ReplaceOneAsync(i => i.Id == match.Id, match,
-                            new UpdateOptions { IsUpsert = true });
+            if (match.Id == Guid.Empty)
+            {
+                await Collection.InsertOneAsync(match);
+            }
+            else
+            {
+                await Collection.ReplaceOneAsync(i => i.Id == match.Id, match);
+            }
         }
     }
 }
