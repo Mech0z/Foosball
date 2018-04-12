@@ -52,6 +52,7 @@ namespace Foosball
             services.AddScoped<ISeasonLogic, SeasonLogic>();
             services.AddScoped<IAccountLogic, AccountLogic>();
             services.AddScoped<IRating, EloRating>();
+            services.AddScoped<IUserLogic, UserLogic>();
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {

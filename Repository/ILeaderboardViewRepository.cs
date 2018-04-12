@@ -6,8 +6,8 @@ namespace Repository
 {
     public interface ILeaderboardViewRepository
     {
-        LeaderboardView GetLeaderboardView(string seasonName);
-        List<LeaderboardView> GetLeaderboardViews();
+        Task<LeaderboardView> GetLeaderboardView(string seasonName);
+        Task<List<LeaderboardView>> GetLeaderboardViews();
         Task Upsert(LeaderboardView view);
     }
 }

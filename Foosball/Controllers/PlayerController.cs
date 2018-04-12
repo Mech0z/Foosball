@@ -18,16 +18,19 @@ namespace Foosball.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMatchupHistoryCreator _matchupHistoryCreator;
         private readonly ISeasonLogic _seasonLogic;
+        private readonly IUserLogic _userLogic;
 
         public PlayerController(IMatchRepository matchRepository,
             IUserRepository userRepository, 
             IMatchupHistoryCreator matchupHistoryCreator, 
-            ISeasonLogic seasonLogic)
+            ISeasonLogic seasonLogic,
+            IUserLogic userLogic)
         {
             _matchRepository = matchRepository;
             _userRepository = userRepository;
             _matchupHistoryCreator = matchupHistoryCreator;
             _seasonLogic = seasonLogic;
+            _userLogic = userLogic;
         }
 
         [HttpGet]
@@ -50,6 +53,16 @@ namespace Foosball.Controllers
         {
             var users = await _userRepository.GetUsersAsync();
             return users.Select(user => new UserResponse(user));
+        }
+
+        [HttpGet]
+        public async Task<GetPlayerSeasonHistoryResponse> GetPlayerHistory(string email)
+        {
+            var responseData = await _userLogic.GetPlayerLeaderboardEntries(email);
+            return new GetPlayerSeasonHistoryResponse
+            {
+                PlayerLeaderboardEntries = responseData
+            };
         }
 
         //[HttpPost]

@@ -20,7 +20,7 @@ namespace Foosball.Logic
         
         public async Task<AchievementsView> GetAchievementsView(string season)
         {
-            var leaderboardView = _leaderboardViewRepository.GetLeaderboardView(season);
+            var leaderboardView = await _leaderboardViewRepository.GetLeaderboardView(season);
             var matches = (await _matchRepository.GetMatches(season)).OrderBy(m=>m.TimeStampUtc).ToList();
 
             GetStreak(matches, leaderboardView.Entries, true, out var winStreak, out var playerWin);
