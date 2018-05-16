@@ -46,7 +46,7 @@ namespace Foosball.Logic
         {
             var seasons = _seasonLogic.GetSeasons();
 
-            var latestLeaderboardViews = _leaderboardViewRepository.GetLeaderboardViews();
+            var latestLeaderboardViews = await _leaderboardViewRepository.GetLeaderboardViews();
 
             foreach (var season in seasons)
             {

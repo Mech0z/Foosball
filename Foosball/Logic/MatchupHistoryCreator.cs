@@ -24,7 +24,7 @@ namespace Foosball.Logic
 
         public async Task<List<PartnerPercentResult>> GetPartnerWinPercent(string email, string season)
         {
-            var leaderboard = _leaderboardViewRepository.GetLeaderboardView(season);
+            var leaderboard = await _leaderboardViewRepository.GetLeaderboardView(season);
             double? normalWinRate = null;
             if (leaderboard != null)
             {

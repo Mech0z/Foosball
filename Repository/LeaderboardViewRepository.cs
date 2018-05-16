@@ -17,24 +17,24 @@ namespace Repository
 
         }
 
-        public LeaderboardView GetLeaderboardView(string seasonName)
+        public async Task<LeaderboardView> GetLeaderboardView(string seasonName)
         {
             var query = Collection.AsQueryable();
 
             query.OrderBy(x => x.Timestamp);
             query.Where(x => x.SeasonName == seasonName);
-            var result = query.ToList().Where(x => x.SeasonName == seasonName).ToList();
+            var result = await query.ToListAsync();
 
             return result.FirstOrDefault();
         }
 
-        public List<LeaderboardView> GetLeaderboardViews()
+        public async Task<List<LeaderboardView>> GetLeaderboardViews()
         {
             var query = Collection.AsQueryable();
 
             query.OrderBy(x => x.Timestamp);
             
-            return query.ToList();
+            return await query.ToListAsync();
         }
 
         public async Task Upsert(LeaderboardView view)
