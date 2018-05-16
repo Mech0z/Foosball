@@ -31,6 +31,8 @@ namespace Foosball
         {
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
+            services.AddScoped<ClaimRequirementFilter>();
 
             services.AddSwaggerGen(c =>
             {

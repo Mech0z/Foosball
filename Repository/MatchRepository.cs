@@ -18,15 +18,10 @@ namespace Repository
 
         public async Task<List<Match>> GetMatches(string season)
         {
-            IMongoQueryable<Match> result;
-            if (season == null)
-            {
-                result = Collection.AsQueryable();
-            }
-            else
-            {
-                result = Collection.AsQueryable().Where(x => x.SeasonName == season);
-            }
+            var result = string.IsNullOrWhiteSpace(season)
+                ? Collection.AsQueryable()
+                : Collection.AsQueryable()
+                    .Where(x => x.SeasonName == season);
 
             return await result.ToListAsync();
         }

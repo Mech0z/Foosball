@@ -36,6 +36,19 @@ namespace Foosball.Logic
             return loginResult;
         }
 
+        public async Task<LoginResult> ValidateLogin(string email, string token, string deviceName, string role = null)
+        {
+            var loginResult =
+                await _userLoginInfoRepository.VerifyLogin(email, token, deviceName);
+
+            if (role != null && !loginResult.Roles.Contains(role))
+            {
+                return new LoginResult{LoginFailed = true};
+            }
+
+            return loginResult;
+        }
+
         public async Task<GetUserMappingsResponse> GetUserMappings(GetUserMappingsRequest request)
         {
             var users = await _userRepository.GetUsersAsync();
