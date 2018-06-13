@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -17,6 +18,13 @@ namespace Foosball.Logic
     
     public class ClaimRequirementFilter : IAuthorizationFilter
     {
+        private readonly Claim _claim;
+
+        public ClaimRequirementFilter(Claim claim)
+        {
+            _claim = claim;
+        }
+
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var headers = context.HttpContext.Request.Headers;
@@ -35,12 +43,12 @@ namespace Foosball.Logic
 
                 if (!hasClaim)
                 {
-                    context.HttpContext.ForbidAsync();
+                    throw new AccessViolationException();
                 }
             }
             else
             {
-                context.HttpContext.ForbidAsync();
+                throw new AccessViolationException();
             }
         }
     }
