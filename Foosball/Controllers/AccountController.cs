@@ -2,6 +2,7 @@
 using Foosball.Logic;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace Foosball.Controllers
 {
@@ -40,9 +41,10 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        public async Task<LoginResponse> ValidateLogin(BaseRequest request)
+        [ClaimRequirement("Permission", ClaimRoles.Player)]
+        public async Task<LoginResponse> ValidateLogin()
         {
-            var result = await _accountLogic.ValidateLogin(request);
+            var result = await _accountLogic.ValidateLogin(HttpContext.GetLoginSession());
 
             return new LoginResponse
             {
@@ -53,9 +55,10 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Logout(BaseRequest request)
+        [ClaimRequirement("Permission", ClaimRoles.Player)]
+        public async Task<bool> Logout()
         {
-            return await _accountLogic.Logout(request);
+            return await _accountLogic.Logout(HttpContext.GetLoginSession());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,13 +34,29 @@ namespace Foosball.Logic
             var emailSuccess = headers.TryGetValue("Email", out var email);
 
             var deviceNameSuccess = headers.TryGetValue("DeviceName", out var deviceName);
-
+            
             if (tokenSuccess && emailSuccess && deviceNameSuccess)
             {
                 var accountLogic = context.HttpContext.RequestServices.GetService<IAccountLogic>();
 
-                var hasClaim = accountLogic.ValidateLogin(email, token, deviceName).Result.Success;
+                var hasClaim = accountLogic.ValidateLogin(email, token, deviceName, _claim.Value).Result.Success;
 
+                if (hasClaim)
+                {
+                    context.HttpContext.User.AddIdentity(
+                        new ClaimsIdentity(new List<Claim> {new Claim("Role", _claim.Value)}));
+                }
+
+                if (!hasClaim && _claim.Value != ClaimRoles.Admin.ToString())
+                {
+                    hasClaim = accountLogic.ValidateLogin(email, token, deviceName, ClaimRoles.Admin.ToString()).Result.Success;
+                    if (hasClaim)
+                    {
+                        context.HttpContext.User.AddIdentity(
+                            new ClaimsIdentity(new List<Claim> { new Claim("Role", ClaimRoles.Admin.ToString())}));
+                    }
+                }
+                
                 if (!hasClaim)
                 {
                     throw new AccessViolationException();
@@ -50,6 +66,15 @@ namespace Foosball.Logic
             {
                 throw new AccessViolationException();
             }
+
+            context.HttpContext.User.AddIdentity(
+                new ClaimsIdentity(new List<Claim> { new Claim("Email", email) }));
+
+            context.HttpContext.User.AddIdentity(
+                new ClaimsIdentity(new List<Claim> { new Claim("Token", token) }));
+
+            context.HttpContext.User.AddIdentity(
+                new ClaimsIdentity(new List<Claim> { new Claim("DeviceName", deviceName) }));
         }
     }
 }

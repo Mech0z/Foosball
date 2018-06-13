@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Foosball.Logic;
-using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.Old;
 
 namespace Foosball.Controllers
@@ -20,8 +19,8 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult StartNewSeason(VoidRequest request)
+        [ClaimRequirement("Permission", ClaimRoles.Admin)]
+        public IActionResult StartNewSeason()
         {
             var seasonName = _seasonLogic.StartNewSeason();
 
@@ -29,7 +28,7 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetSeasons(VoidRequest request)
+        public IActionResult GetSeasons()
         {
             List<Season> seasons = _seasonLogic.GetSeasons();
             return Ok(seasons);

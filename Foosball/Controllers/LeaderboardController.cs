@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foosball.Logic;
-using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Old;
@@ -16,7 +14,6 @@ namespace Foosball.Controllers
     {
         private readonly ILeaderboardService _leaderboardService;
         private readonly ISeasonLogic _seasonLogic;
-        private readonly IAccountLogic _accountLogic;
 
         public LeaderboardController(ILeaderboardService leaderboardService,
             ISeasonLogic seasonLogic,
@@ -24,7 +21,6 @@ namespace Foosball.Controllers
         {
             _leaderboardService = leaderboardService;
             _seasonLogic = seasonLogic;
-            _accountLogic = accountLogic;
         }
 
         [HttpGet]
@@ -35,16 +31,15 @@ namespace Foosball.Controllers
 
         [HttpPost]
         [ClaimRequirement("Permission", ClaimRoles.Admin)]
-        public async Task ResetLeaderboard()
+        public async Task<IActionResult> ResetLeaderboard()
         {
-            //var loginResult = await _accountLogic.ValidateLogin(request, "Admin");
-            //if (!loginResult.Success) throw new AccessViolationException();
-
             var seasons = _seasonLogic.GetSeasons();
             foreach (var season in seasons)
             {
                 await _leaderboardService.RecalculateLeaderboard(season.Name);
             }
+
+            return Ok();
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    //[Authorize(Roles= "Admin")]
+    [ClaimRequirement("Permission", ClaimRoles.Admin)]
     [ApiController]
     public class AdministrationController : Controller
     {
@@ -20,39 +20,21 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        public async Task<GetUserMappingsResponse> GetUserMappings(GetUserMappingsRequest request)
+        public async Task<GetUserMappingsResponse> GetUserMappings()
         {
-            var loginResult = await _accountLogic.ValidateLogin(request, "Admin");
-            if (loginResult.Success)
-            {
-                return await _accountLogic.GetUserMappings(request);
-            }
-
-            throw new AccessViolationException();
+            return await _accountLogic.GetUserMappings();
         }
 
         [HttpPost]
         public async Task<bool> ChangeUserPassword(ChangeUserPasswordRequest request)
         {
-            var loginResult = await _accountLogic.ValidateLogin(request, "Admin");
-            if (loginResult.Success)
-            {
-                return await _accountLogic.ChangeUserPassword(request.UserEmail, request.NewPassword);
-            }
-
-            throw new AccessViolationException();
+            return await _accountLogic.ChangeUserPassword(request.UserEmail, request.NewPassword);
         }
 
         [HttpPost]
         public async Task<bool> ChangeUserRoles(ChangeUserRolesRequest request)
         {
-            var loginResult = await _accountLogic.ValidateLogin(request, "Admin");
-            if (loginResult.Success)
-            {
-                return await _accountLogic.ChangeUserRoles(request.UserEmail, request.Roles);
-            }
-
-            throw new AccessViolationException();
+            return await _accountLogic.ChangeUserRoles(request.UserEmail, request.Roles);
         }
     }
 }

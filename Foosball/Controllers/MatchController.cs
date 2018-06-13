@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.Old;
 using Repository;
 
@@ -63,21 +64,17 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
+        [ClaimRequirement("Permission", ClaimRoles.Player)]
         public async Task<IActionResult> SaveMatch(SaveMatchesRequest saveMatchesRequest)
         {
             if (saveMatchesRequest == null)
             {
                 return BadRequest();
             }
-            var loginResult = await _accountLogic.ValidateLogin(saveMatchesRequest, "Player");
-            if (loginResult.LoginFailed)
-            {
-                return Unauthorized();
-            }
 
             foreach (var match in saveMatchesRequest.Matches)
             {
-                if (!match.PlayerList.Contains(saveMatchesRequest.Email) && !loginResult.Roles.Contains("Admin"))
+                if (!match.PlayerList.Contains(saveMatchesRequest.Email) || HttpContext.User.HasClaim(x => x.Type == "Role" && x.Value == ClaimRoles.Admin.ToString()))
                 {
                     return Unauthorized();
                 }

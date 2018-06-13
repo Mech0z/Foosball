@@ -4,9 +4,12 @@ using Models.Old;
 
 namespace Foosball.RequestResponse
 {
-    public class SaveMatchesRequest : BaseRequest
+    public class SaveMatchesRequest
     {
         [Required]
         public List<Match> Matches { get; set; }
+
+        [Required]
+        public string Email { get; set; }
     }
 }

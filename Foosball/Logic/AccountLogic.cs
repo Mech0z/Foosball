@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Foosball.RequestResponse;
+using Models;
 using Models.Old;
 using Repository;
 
@@ -23,10 +24,10 @@ namespace Foosball.Logic
             return await _userLoginInfoRepository.Login(email, password, rememberMe, deviceName);
         }
 
-        public async Task<LoginResult> ValidateLogin(BaseRequest request, string role = null)
+        public async Task<LoginResult> ValidateLogin(LoginSession loginSession, string role = null)
         {
             var loginResult =
-                await _userLoginInfoRepository.VerifyLogin(request.Email, request.Token, request.DeviceName);
+                await _userLoginInfoRepository.VerifyLogin(loginSession.Email, loginSession.Token, loginSession.DeviceName);
 
             if (role != null && !loginResult.Roles.Contains(role))
             {
@@ -49,7 +50,7 @@ namespace Foosball.Logic
             return loginResult;
         }
 
-        public async Task<GetUserMappingsResponse> GetUserMappings(GetUserMappingsRequest request)
+        public async Task<GetUserMappingsResponse> GetUserMappings()
         {
             var users = await _userRepository.GetUsersAsync();
             var userRoles = await _userLoginInfoRepository.GetAllUserRoles();
@@ -92,9 +93,9 @@ namespace Foosball.Logic
             return false;
         }
 
-        public async Task<bool> Logout(BaseRequest request)
+        public async Task<bool> Logout(LoginSession session)
         {
-            return await _userLoginInfoRepository.Logout(request.Email, request.Token, request.DeviceName);
+            return await _userLoginInfoRepository.Logout(session.Email, session.Token, session.DeviceName);
         }
     }
 }
