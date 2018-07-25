@@ -72,14 +72,16 @@ namespace Foosball.Controllers
                 return BadRequest();
             }
 
+            var hasAdminClaim = HttpContext.User.HasClaim(x => x.Type == "Role" && x.Value == ClaimRoles.Admin.ToString());
+
             foreach (var match in saveMatchesRequest.Matches)
             {
-                if (!match.PlayerList.Contains(saveMatchesRequest.Email) || HttpContext.User.HasClaim(x => x.Type == "Role" && x.Value == ClaimRoles.Admin.ToString()))
+                if (!match.PlayerList.Contains(saveMatchesRequest.Email) || hasAdminClaim)
                 {
                     return Unauthorized();
                 }
             }
-
+            
             var seasons = _seasonLogic.GetSeasons();
 
             if (seasons.All(x => x.EndDate != null))
@@ -89,9 +91,16 @@ namespace Foosball.Controllers
 
             var currentSeason = seasons.Single(x => x.EndDate == null);
 
-            var matches = saveMatchesRequest.Matches.OrderBy(x => x.TimeStampUtc).ToList();
+            var isEdit = saveMatchesRequest.Matches.Any(x => x.Id == Guid.Empty);
+            var fromPreviousSeason = saveMatchesRequest.Matches.Any(x => x.TimeStampUtc < currentSeason.StartDate);
 
-            //Sat i AddMatch java
+            if (isEdit && fromPreviousSeason && !hasAdminClaim)
+            {
+                return Forbid();
+            }
+
+            var matches = saveMatchesRequest.Matches.OrderBy(x => x.TimeStampUtc).ToList();
+            
             foreach (var match in matches)
             {
                 match.SubmittedBy = saveMatchesRequest.Email;
@@ -99,20 +108,40 @@ namespace Foosball.Controllers
                 {
                     match.TimeStampUtc = DateTime.UtcNow;
                 }
-                
+
                 match.SeasonName = currentSeason.Name;
 
                 var leaderboards = await _leaderboardService.GetLatestLeaderboardViews();
 
                 var activeLeaderboard = leaderboards.SingleOrDefault(x => x.SeasonName == currentSeason.Name);
 
-                _leaderboardService.AddMatchToLeaderboard(activeLeaderboard, match);
+                if (!isEdit)
+                {
+                    _leaderboardService.AddMatchToLeaderboard(activeLeaderboard, match);
+                }
 
                 await _matchRepository.Upsert(match);
 
-                await _leaderboardViewRepository.Upsert(activeLeaderboard);
+                if (!isEdit)
+                {
+                    await _leaderboardViewRepository.Upsert(activeLeaderboard);
+                }
             }
-            
+
+            if (isEdit)
+            {
+                if (fromPreviousSeason)
+                {
+                    var season = seasons.Single(x =>
+                        x.StartDate <= matches.First().TimeStampUtc && x.EndDate >= matches.First().TimeStampUtc);
+                    await _leaderboardService.RecalculateLeaderboard(season.Name);
+                }
+                else
+                {
+                    await _leaderboardService.RecalculateLeaderboard(currentSeason.Name);
+                }
+            }
+
             return Ok();
         }
 
