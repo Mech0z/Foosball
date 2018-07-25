@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.Old;
 using Repository;
 
@@ -65,53 +66,47 @@ namespace Foosball.Controllers
             };
         }
 
-        //[HttpPost]
-        //public IActionResult CreateUser(User user)
-        //{
-        //    var users = _userRepository.GetUsers();
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(CreateUserRequest request)
+        {
+            var users = await _userRepository.GetUsersAsync();
 
-        //    if (string.IsNullOrEmpty(user.Email))
-        //    {
-        //        return BadRequest("Email cant be null");
-        //    }
+            if (string.IsNullOrEmpty(request.Email) || !request.Email.Contains("@"))
+            {
+                return BadRequest("Invalid email");
+            }
 
-        //    if (users.Any(x => x.Email == user.Email))
-        //    {
-        //        return BadRequest();
-        //    }
+            if (request.Password.Length < 6)
+            {
+                return BadRequest("Password must be at least 6 charecters long");
+            }
 
-        //    _userRepository.AddUser(user);
-        //    return Ok();
-        //}
+            if (request.Username.Length < 6)
+            {
+                return BadRequest("Username must be at least 6 charecters long");
+            }
 
-        //[HttpPost]
-        //public IActionResult Login(User user)
-        //{
-        //    var hash = _userRepository.Login(user);
-        //    if (hash == string.Empty)
-        //    {
-        //        return Unauthorized();
-        //    }
-            
-        //    return Ok(hash);
-        //}
+            if (users.Any(x => x.Email == request.Email))
+            {
+                return BadRequest("Email already taken");
+            }
 
-        //[HttpPost]
-        //public IActionResult ChangePassword(ChangePasswordRequest request)
-        //{
-        //    if (request.NewPassword.Length < 6)
-        //    {
-        //        return BadRequest("Password too short");
-        //    }
+            await _userRepository.AddUser(request.Email, request.Username, request.Password);
+            return Ok("User created");
+        }
 
-        //    var hash = _userRepository.ChangePassword(request.Email, request.OldPassword, request.NewPassword);
-            
-        //    if (hash == string.Empty)
-        //    {
-        //        return Unauthorized();
-        //    }
-            
-        //    return Ok(hash);
-        //}
+        [HttpPost]
+        [ClaimRequirement("Permission", ClaimRoles.Player)]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            if (request.NewPassword.Length < 6)
+            {
+                return BadRequest("Password too short");
+            }
+
+            await _userRepository.ChangePassword(request.Email, request.NewPassword);
+
+            return Ok("Password changed");
+        }
     }
 }

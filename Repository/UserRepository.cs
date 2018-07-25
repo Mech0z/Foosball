@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Models;
 using Models.Old;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -29,76 +28,34 @@ namespace Repository
             return users;
         }
 
-        //public void AddUser(User user)
-        //{
-        //    user.Password = BCrypt.Net.BCrypt.HashPassword("default", BCrypt.Net.BCrypt.GenerateSalt());
+        public async Task AddUser(string email, string username, string password)
+        {
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword("default", BCrypt.Net.BCrypt.GenerateSalt());
 
-        //    Collection.InsertOne(user);
-        //}
+            var newUser = new User
+            {
+                Email = email,
+                Password = hashedPassword,
+                Username = username
+            };
 
-        //public string Login(User inputUser)
-        //{
-        //    var user = Collection.AsQueryable().Where(x => x.Email == inputUser.Email).SingleOrDefault();
+            await Collection.InsertOneAsync(newUser);
+        }
 
-        //    if (user != null)
-        //    {
-        //        if (BCrypt.Net.BCrypt.Verify(inputUser.Password, user.Password))
-        //        {
-        //            return user.Password;
-        //        }
-        //    }
+        public async Task ChangePassword(string email, string newPassword)
+        {
+            var query = Collection.AsQueryable();
+            var user = await query.SingleAsync(x => x.Email == email);
 
-        //    return string.Empty;
-        //}
+            user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword, BCrypt.Net.BCrypt.GenerateSalt());
 
-        //public string ChangePassword(string email, string oldPassword, string newPassword)
-        //{
-        //    var user = Collection.AsQueryable().Where(x => x.Email == email).SingleOrDefault();
+            Collection.ReplaceOne(item => item.Id == user.Id, user,
+                            new UpdateOptions { IsUpsert = true });
+        }
 
-        //    if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.Password))
-        //    {
-        //        return string.Empty;
-        //    }
-
-        //    user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword, BCrypt.Net.BCrypt.GenerateSalt());
-
-        //    Collection.ReplaceOne(item => item.Id == user.Id, user,
-        //                    new UpdateOptions { IsUpsert = true });
-
-        //    return user.Password;
-        //}
-
-        //public bool Validate(User inputUser)
-        //{
-        //    var user = Collection.AsQueryable().Where(x => x.Email == inputUser.Email).SingleOrDefault();
-
-        //    if (user != null)
-        //    {
-        //        if (user.Password == inputUser.Password)
-        //        {
-        //            return true;
-        //        }
-        //    }
-
-        //    return false;
-        //}
-
-        //public User GetUser(string email)
-        //{
-        //    return Collection.AsQueryable().Where(x => x.Email.Value == email).SingleOrDefault();
-        //}
-
-        //public void AddUser(User user)
-        //{
-        //    string email = user.Email.Value;
-        //    var mongoUserEmail = new MongoUserEmail(email);
-        //    mongoUserEmail.SetNormalizedEmail(email.ToUpper());
-        //    user.SetEmail(mongoUserEmail);
-
-        //    user.GravatarEmail = email;
-        //    user.SetNormalizedUserName(email.ToUpper());
-
-        //    Collection.InsertOne(user);
-        //}
+        public async Task<User> GetUser(string email)
+        {
+            return await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
+        }
     }
 }
