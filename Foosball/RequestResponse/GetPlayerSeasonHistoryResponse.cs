@@ -7,9 +7,9 @@ namespace Foosball.RequestResponse
     {
         public GetPlayerSeasonHistoryResponse()
         {
-            PlayerLeaderboardEntries = new List<PlayerLeaderboardEntry>();
+            PlayerLeaderBoardEntries = new List<PlayerLeaderboardEntry>();
         }
 
-        public List<PlayerLeaderboardEntry> PlayerLeaderboardEntries { get; set; }
+        public List<PlayerLeaderboardEntry> PlayerLeaderBoardEntries { get; set; }
     }
 }

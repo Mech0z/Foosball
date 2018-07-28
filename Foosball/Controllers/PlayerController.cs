@@ -62,7 +62,7 @@ namespace Foosball.Controllers
             var responseData = await _userLogic.GetPlayerLeaderboardEntries(email);
             return new GetPlayerSeasonHistoryResponse
             {
-                PlayerLeaderboardEntries = responseData
+                PlayerLeaderBoardEntries = responseData
             };
         }
 
@@ -78,12 +78,12 @@ namespace Foosball.Controllers
 
             if (request.Password.Length < 6)
             {
-                return BadRequest("Password must be at least 6 charecters long");
+                return BadRequest("Password must be at least 6 characters long");
             }
 
             if (request.Username.Length < 6)
             {
-                return BadRequest("Username must be at least 6 charecters long");
+                return BadRequest("Username must be at least 6 characters long");
             }
 
             if (users.Any(x => x.Email == request.Email))
