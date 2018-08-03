@@ -76,7 +76,7 @@ namespace Foosball.Controllers
 
             foreach (var match in saveMatchesRequest.Matches)
             {
-                if (!match.PlayerList.Contains(saveMatchesRequest.Email) || hasAdminClaim)
+                if (!match.PlayerList.Contains(saveMatchesRequest.Email) && !hasAdminClaim)
                 {
                     return Unauthorized();
                 }
