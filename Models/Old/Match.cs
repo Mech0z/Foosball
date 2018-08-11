@@ -14,10 +14,10 @@ namespace Models.Old
 
         /// <summary>
         /// Ordered:
-        /// Team 1 Defence
-        /// Team 1 Offence
-        /// Team 2 Defence
-        /// Team 2 Offence
+        /// Team 1
+        /// Team 1
+        /// Team 2
+        /// Team 2
         /// </summary>
         public List<string> PlayerList { get; set; }
         

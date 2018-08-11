@@ -60,9 +60,11 @@ namespace Foosball.Controllers
         public async Task<GetPlayerSeasonHistoryResponse> GetPlayerHistory(string email)
         {
             var responseData = await _userLogic.GetPlayerLeaderboardEntries(email);
+            var eggData = await _userLogic.GetEggStats(email);
             return new GetPlayerSeasonHistoryResponse
             {
-                PlayerLeaderBoardEntries = responseData
+                PlayerLeaderBoardEntries = responseData,
+                EggStats = eggData
             };
         }
 

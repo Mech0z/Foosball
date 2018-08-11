@@ -11,5 +11,6 @@ namespace Foosball.RequestResponse
         }
 
         public List<PlayerLeaderboardEntry> PlayerLeaderBoardEntries { get; set; }
+        public EggStats EggStats { get; set; }
     }
 }
