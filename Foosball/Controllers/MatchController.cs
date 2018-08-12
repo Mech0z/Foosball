@@ -80,6 +80,11 @@ namespace Foosball.Controllers
                 {
                     return Unauthorized();
                 }
+
+                if (!ValidateScore(match))
+                {
+                    return Forbid($"Invalid match score {match.MatchResult.Team1Score} - {match.MatchResult.Team2Score}");
+                }
             }
             
             var seasons = _seasonLogic.GetSeasons();
@@ -143,6 +148,39 @@ namespace Foosball.Controllers
             }
 
             return Ok();
+        }
+
+        private bool ValidateScore(Match match)
+        {
+            var team1Score = match.MatchResult.Team1Score;
+            var team2Score = match.MatchResult.Team2Score;
+
+            if (team1Score < 0 || team2Score < 0)
+            {
+                return false;
+            }
+
+            if (team1Score < 8 && team2Score < 8)
+            {
+                return false;
+            }
+
+            if ((team1Score == 8 && team2Score <= 6) || (team1Score <= 6 && team2Score == 8))
+            {
+                return true;
+            }
+
+            if (team1Score > 8)
+            {
+                return team2Score == team1Score + 2 || team2Score == team1Score - 2;
+            }
+
+            if (team2Score > 8)
+            {
+                return team1Score == team2Score + 2 || team1Score == team2Score - 2;
+            }
+
+            return true;
         }
 
         [HttpGet]
