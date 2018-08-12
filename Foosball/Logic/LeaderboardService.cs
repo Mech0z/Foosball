@@ -44,7 +44,7 @@ namespace Foosball.Logic
 
         public async Task<List<LeaderboardView>> GetLatestLeaderboardViews()
         {
-            var seasons = _seasonLogic.GetSeasons();
+            var seasons = await _seasonLogic.GetSeasons();
 
             var latestLeaderboardViews = await _leaderboardViewRepository.GetLeaderboardViews();
 

@@ -87,7 +87,7 @@ namespace Foosball.Controllers
                 }
             }
             
-            var seasons = _seasonLogic.GetSeasons();
+            var seasons = await _seasonLogic.GetSeasons();
 
             if (seasons.All(x => x.EndDate != null))
             {

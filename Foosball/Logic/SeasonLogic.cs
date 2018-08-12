@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Models.Old;
 using Repository;
 
@@ -15,9 +16,9 @@ namespace Foosball.Logic
             _seasonRepository = seasonRepository;
         }
         
-        public string StartNewSeason()
+        public async Task<string> StartNewSeason()
         {
-            var seasons = _seasonRepository.GetSeasons();
+            var seasons = await _seasonRepository.GetSeasons();
             var newSeasonNumber = seasons.Count + 1;
 
             var activeSeason = seasons.SingleOrDefault(x => x.EndDate == null);
@@ -29,7 +30,7 @@ namespace Foosball.Logic
                     throw new Exception("Cant start new season yet");
                 }
 
-                _seasonRepository.EndSeason(activeSeason);
+                await _seasonRepository.EndSeason(activeSeason);
             }
 
             var newSeason = new Season
@@ -38,19 +39,19 @@ namespace Foosball.Logic
                 Name = string.Format("Season {0}", newSeasonNumber)
             };
 
-            _seasonRepository.CreateNewSeason(newSeason);
+            await _seasonRepository.CreateNewSeason(newSeason);
 
             return newSeason.Name;
         }
 
-        public List<Season> GetSeasons()
+        public async Task<List<Season>> GetSeasons()
         {
-            return _seasonRepository.GetSeasons();
+            return await _seasonRepository.GetSeasons();
         }
 
-        public Season GetActiveSeason()
+        public async Task<Season> GetActiveSeason()
         {
-            var existingSeasons = _seasonRepository.GetSeasons();
+            var existingSeasons = await _seasonRepository.GetSeasons();
 
             return existingSeasons.SingleOrDefault(x => x.EndDate == null);
         }

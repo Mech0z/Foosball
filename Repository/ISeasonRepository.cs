@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Models;
 using Models.Old;
@@ -11,10 +12,10 @@ namespace Repository
 {
     public interface ISeasonRepository
     {
-        List<Season> GetSeasons();
+        Task<List<Season>> GetSeasons();
         Season GetSeason(string seasonName);
-        void CreateNewSeason(Season season);
-        void EndSeason(Season season);
+        Task CreateNewSeason(Season season);
+        Task EndSeason(Season season);
     }
 
     public class SeasonRepository : BaseRepository<Season>, ISeasonRepository
@@ -24,21 +25,21 @@ namespace Repository
 
         }
 
-        public List<Season> GetSeasons()
+        public async Task<List<Season>> GetSeasons()
         {
             var seasons =
                 from e in Collection.AsQueryable()
                 select e;
 
-            return IAsyncCursorSourceExtensions.ToList(seasons);
+            return await IAsyncCursorSourceExtensions.ToListAsync(seasons);
         }
 
-        public void CreateNewSeason(Season season)
+        public async Task CreateNewSeason(Season season)
         {
-            Collection.InsertOneAsync(season);
+            await Collection.InsertOneAsync(season);
         }
 
-        public void EndSeason(Season season)
+        public async Task EndSeason(Season season)
         {
             var seasons =
                 from e in Collection.AsQueryable()
@@ -48,7 +49,7 @@ namespace Repository
 
             var currentSeason = seasons.FirstOrDefault();
             currentSeason.EndDate = DateTime.UtcNow.Date.AddHours(23);
-            Collection.InsertOne(currentSeason);
+            await Collection.ReplaceOneAsync(x => x.Name == currentSeason.Name, currentSeason);
         }
 
         public Season GetSeason(string seasonName)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Foosball.Logic;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -28,9 +29,9 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetSeasons()
+        public async Task<IActionResult> GetSeasons()
         {
-            List<Season> seasons = _seasonLogic.GetSeasons();
+            List<Season> seasons = await _seasonLogic.GetSeasons();
             return Ok(seasons);
         }
     }

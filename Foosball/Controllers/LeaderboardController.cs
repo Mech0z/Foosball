@@ -33,7 +33,7 @@ namespace Foosball.Controllers
         [ClaimRequirement("Permission", ClaimRoles.Admin)]
         public async Task<IActionResult> ResetLeaderboard()
         {
-            var seasons = _seasonLogic.GetSeasons();
+            var seasons = await _seasonLogic.GetSeasons();
             foreach (var season in seasons)
             {
                 await _leaderboardService.RecalculateLeaderboard(season.Name);

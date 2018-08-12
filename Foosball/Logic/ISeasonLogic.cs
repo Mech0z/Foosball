@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Models.Old;
 
 namespace Foosball.Logic
 {
     public interface ISeasonLogic
     {
-        string StartNewSeason();
-        List<Season> GetSeasons();
-        Season GetActiveSeason();
+        Task<string> StartNewSeason();
+        Task<List<Season>> GetSeasons();
+        Task<Season> GetActiveSeason();
     }
 }

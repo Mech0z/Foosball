@@ -44,7 +44,7 @@ namespace Foosball.Controllers
         [HttpGet]
         public async Task<List<PartnerPercentResult>> GetPlayerPartnerResults(string email)
         {
-            var activeSeason = _seasonLogic.GetActiveSeason();
+            var activeSeason = await _seasonLogic.GetActiveSeason();
 
             return await _matchupHistoryCreator.GetPartnerWinPercent(email, activeSeason.Name);
         }
