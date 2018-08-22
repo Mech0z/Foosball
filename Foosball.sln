@@ -7,29 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{9B52EB22-CDCA-48E1-A24D-B0EAC4DEDEEC}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Frontend", "Frontend\", "{C2473475-254E-46B2-ABD1-EE8CE83096F0}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_57261"
-		Debug.AspNetCompiler.PhysicalPath = "Frontend\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_57261\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_57261"
-		Release.AspNetCompiler.PhysicalPath = "Frontend\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_57261\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "57261"
-		SlnRelativePath = "Frontend\"
-		DefaultWebSiteLanguage = "Visual C#"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foosball", "Foosball\Foosball.csproj", "{B21F9E09-B6E3-4070-9265-87719ABC440D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foosball", "Foosball\Foosball.csproj", "{B21F9E09-B6E3-4070-9265-87719ABC440D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +23,6 @@ Global
 		{9B52EB22-CDCA-48E1-A24D-B0EAC4DEDEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B52EB22-CDCA-48E1-A24D-B0EAC4DEDEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B52EB22-CDCA-48E1-A24D-B0EAC4DEDEEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2473475-254E-46B2-ABD1-EE8CE83096F0}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{B21F9E09-B6E3-4070-9265-87719ABC440D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B21F9E09-B6E3-4070-9265-87719ABC440D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B21F9E09-B6E3-4070-9265-87719ABC440D}.Release|Any CPU.ActiveCfg = Release|Any CPU
