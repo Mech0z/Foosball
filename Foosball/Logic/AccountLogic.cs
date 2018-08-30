@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Foosball.RequestResponse;
 using Models;
@@ -91,6 +93,41 @@ namespace Foosball.Logic
             }
             
             return false;
+        }
+
+        public async Task<bool> CreateUser(string email, string displayName, string password)
+        {
+            var createUserResult = await _userRepository.AddUser(email, displayName);
+
+            if (!createUserResult)
+                return false;
+
+            var createUserLoginInfo = await _userLoginInfoRepository.CreateUser(email, password);
+
+            return createUserLoginInfo;
+        }
+
+        public async Task<bool> RequestPassword(string email)
+        {
+            var newPassword = CreatePassword(6);
+
+            var success = await _userLoginInfoRepository.AdminChangePassword(email, newPassword);
+
+            //TODO send email
+
+            return success;
+        }
+
+        public string CreatePassword(int length)
+        {
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }
+            return res.ToString();
         }
 
         public async Task<bool> Logout(LoginSession session)

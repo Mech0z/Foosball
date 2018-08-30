@@ -28,21 +28,26 @@ namespace Repository
             return users;
         }
 
-        public async Task AddUser(string email, string username, string password)
+        public async Task<bool> AddUser(string email, string username)
         {
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword("default", BCrypt.Net.BCrypt.GenerateSalt());
+            var query = Collection.AsQueryable();
+            var existingResult = await query.SingleOrDefaultAsync(x => x.Email == email || x.Username == username);
+
+            if (existingResult != null)
+                return false;
 
             var newUser = new User
             {
                 Email = email,
-                Password = hashedPassword,
                 Username = username
             };
 
             await Collection.InsertOneAsync(newUser);
+
+            return true;
         }
 
-        public async Task ChangePassword(string email, string newPassword)
+        public async Task<bool> ChangePassword(string email, string newPassword)
         {
             var query = Collection.AsQueryable();
             var user = await query.SingleAsync(x => x.Email == email);
@@ -51,6 +56,8 @@ namespace Repository
 
             Collection.ReplaceOne(item => item.Id == user.Id, user,
                             new UpdateOptions { IsUpsert = true });
+
+            return true;
         }
 
         public async Task<User> GetUser(string email)

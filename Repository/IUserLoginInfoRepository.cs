@@ -11,7 +11,7 @@ namespace Repository
         Task<bool> Logout(string email, string token, string deviceName);
         Task<bool> ChangePassword(string email, string oldPassword, string newPassword);
         Task<bool> AdminChangePassword(string email, string newPassword);
-        LoginToken CreateUser(string email, string token, string deviceName);
+        Task<bool> CreateUser(string email, string password);
         Task<List<string>> GetUserRoles(string email);
         Task<List<UserRole>> GetAllUserRoles();
         Task<bool> UpdateUserRoles(string email, List<string> roles);

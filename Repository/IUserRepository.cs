@@ -7,8 +7,8 @@ namespace Repository
     public interface IUserRepository
     {
         Task<List<User>> GetUsersAsync();
-        Task AddUser(string email, string username, string password);
-        Task ChangePassword(string email, string newPassword);
+        Task<bool> AddUser(string email, string username);
+        Task<bool> ChangePassword(string email, string newPassword);
         Task<User> GetUser(string email);
     }
 }
