@@ -37,9 +37,21 @@ namespace Foosball.Logic
             
             if (tokenSuccess && emailSuccess && deviceNameSuccess)
             {
-                var accountLogic = context.HttpContext.RequestServices.GetService<IAccountLogic>();
+                
 
-                var hasClaim = accountLogic.ValidateLogin(email, token, deviceName, _claim.Value).Result.Success;
+                var accountLogic = context.HttpContext.RequestServices.GetService<IAccountLogic>();
+                bool hasClaim;
+                if (_claim.Value == ClaimRoles.Unauth.ToString())
+                {
+                    context.HttpContext.User.AddIdentity(
+                        new ClaimsIdentity(new List<Claim> { new Claim("Role", _claim.Value) }));
+
+                    hasClaim = true;
+                }
+                else
+                {
+                    hasClaim = accountLogic.ValidateLogin(email, token, deviceName, _claim.Value).Result.Success;
+                }
 
                 if (hasClaim)
                 {
