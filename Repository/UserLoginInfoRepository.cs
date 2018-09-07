@@ -37,7 +37,8 @@ namespace Repository
 
         public async Task<LoginResult> Login(string email, string password, bool rememberMe, string deviceName)
         {
-            var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
+            var existingUserLogin = await Collection.AsQueryable()
+                .SingleOrDefaultAsync(x => x.Email.ToLowerInvariant() == email.ToLowerInvariant());
             var correctPassword = BCrypt.Net.BCrypt.Verify(password, existingUserLogin.HashedPassword);
 
             if (!correctPassword) { return new LoginResult(); }

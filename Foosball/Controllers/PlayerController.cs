@@ -72,7 +72,7 @@ namespace Foosball.Controllers
         public async Task<IActionResult> CreateUser(CreateUserRequest request)
         {
             var users = await _userRepository.GetUsersAsync();
-
+            
             if (string.IsNullOrEmpty(request.Email) || !request.Email.Contains("@"))
             {
                 return BadRequest("Invalid email");

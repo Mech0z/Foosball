@@ -34,7 +34,7 @@ namespace Repository
 
             var newUser = new User
             {
-                Email = email,
+                Email = email.ToLowerInvariant(),
                 Password = hashedPassword,
                 Username = username
             };
