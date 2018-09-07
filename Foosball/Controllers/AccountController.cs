@@ -55,7 +55,7 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        [ClaimRequirement("Permission", ClaimRoles.Player)]
+        [ClaimRequirement("Permission", ClaimRoles.Unauth)]
         public async Task<bool> Logout()
         {
             return await _accountLogic.Logout(HttpContext.GetLoginSession());

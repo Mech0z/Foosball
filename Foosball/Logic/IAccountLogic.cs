@@ -15,5 +15,7 @@ namespace Foosball.Logic
         Task<bool> ChangeUserPassword(string email, string newPassword);
         Task<bool> ChangeUserRoles(string userEmail, List<string> updatedRoles);
         Task<bool> Logout(LoginSession session);
+        Task<bool> CreateUser(string email, string displayName, string password);
+        Task<bool> RequestPassword(string email);
     }
 }

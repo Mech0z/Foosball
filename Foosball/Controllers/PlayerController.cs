@@ -20,18 +20,21 @@ namespace Foosball.Controllers
         private readonly IMatchupHistoryCreator _matchupHistoryCreator;
         private readonly ISeasonLogic _seasonLogic;
         private readonly IUserLogic _userLogic;
+        private readonly IAccountLogic _accountLogic;
 
         public PlayerController(IMatchRepository matchRepository,
             IUserRepository userRepository, 
             IMatchupHistoryCreator matchupHistoryCreator, 
             ISeasonLogic seasonLogic,
-            IUserLogic userLogic)
+            IUserLogic userLogic,
+            IAccountLogic accountLogic)
         {
             _matchRepository = matchRepository;
             _userRepository = userRepository;
             _matchupHistoryCreator = matchupHistoryCreator;
             _seasonLogic = seasonLogic;
             _userLogic = userLogic;
+            _accountLogic = accountLogic;
         }
 
         [HttpGet]
@@ -69,7 +72,7 @@ namespace Foosball.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(CreateUserRequest request)
+        public async Task<IActionResult> CreateUser([FromBody]CreateUserRequest request)
         {
             var users = await _userRepository.GetUsersAsync();
             
@@ -93,7 +96,11 @@ namespace Foosball.Controllers
                 return BadRequest("Email already taken");
             }
 
-            await _userRepository.AddUser(request.Email, request.Username, request.Password);
+            var createResult = await _accountLogic.CreateUser(request.Email, request.Username, request.Password);
+
+            if (!createResult)
+                return BadRequest();
+
             return Ok("User created");
         }
 
@@ -109,6 +116,17 @@ namespace Foosball.Controllers
             await _userRepository.ChangePassword(request.Email, request.NewPassword);
 
             return Ok("Password changed");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RequestPassword([FromHeader] string email)
+        {
+            var requestResult = await _accountLogic.RequestPassword(email);
+
+            if (requestResult)
+                return Ok();
+
+            return BadRequest();
         }
     }
 }

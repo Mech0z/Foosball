@@ -12,8 +12,11 @@ namespace Repository
 {
     public class UserLoginInfoRepository : BaseRepository<UserLoginInfo>, IUserLoginInfoRepository
     {
-        public UserLoginInfoRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "UserLoginInfos")
+        private readonly IUserRepository _userRepository;
+
+        public UserLoginInfoRepository(IOptions<ConnectionStringsSettings> settings, IUserRepository userRepository) : base(settings, "UserLoginInfos")
         {
+            _userRepository = userRepository;
         }
 
         public async Task<LoginResult> VerifyLogin(string email, string token, string deviceName)
@@ -104,6 +107,11 @@ namespace Repository
 
         public async Task<bool> AdminChangePassword(string email, string newPassword)
         {
+            var doUserExist = await _userRepository.GetUser(email);
+
+            if (doUserExist == null)
+                return false;
+
             var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
             
             var newHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
@@ -126,9 +134,23 @@ namespace Repository
             return true;
         }
 
-        public LoginToken CreateUser(string email, string token, string deviceName)
+        public async Task<bool> CreateUser(string email, string password)
         {
-            throw new NotImplementedException();
+            var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
+
+            if (existingUserLogin != null)
+                return false;
+
+            var hashPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            var newUserLogin = new UserLoginInfo
+            {
+                Email = email,
+                HashedPassword = hashPassword
+            };
+            await Collection.InsertOneAsync(newUserLogin);
+
+            return true;
         }
 
         public async Task<List<string>> GetUserRoles(string email)
