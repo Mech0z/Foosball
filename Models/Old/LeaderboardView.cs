@@ -7,7 +7,6 @@ namespace Models.Old
     {
         public LeaderboardView()
         {
-            Id = Guid.NewGuid();
             Entries = new List<LeaderboardViewEntry>();
             Timestamp = DateTime.UtcNow;
         }

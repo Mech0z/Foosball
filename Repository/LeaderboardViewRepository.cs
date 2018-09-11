@@ -32,9 +32,7 @@ namespace Repository
         {
             var query = Collection.AsQueryable();
 
-            query.OrderBy(x => x.Timestamp);
-            
-            return await query.ToListAsync();
+            return await query.ToListAsync();;
         }
 
         public async Task Upsert(LeaderboardView view)
