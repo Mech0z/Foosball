@@ -30,6 +30,7 @@ namespace Foosball
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
+            services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             
             services.AddScoped<ClaimRequirementFilter>();
@@ -55,6 +56,7 @@ namespace Foosball
             services.AddScoped<IAccountLogic, AccountLogic>();
             services.AddScoped<IRating, EloRating>();
             services.AddScoped<IUserLogic, UserLogic>();
+            services.AddScoped<IEmailLogic, EmailLogic>();
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {

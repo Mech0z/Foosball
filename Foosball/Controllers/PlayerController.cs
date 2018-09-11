@@ -113,7 +113,7 @@ namespace Foosball.Controllers
                 return BadRequest("Password too short");
             }
 
-            await _userRepository.ChangePassword(request.Email, request.NewPassword);
+            //await _userRepository.ChangePassword(request.Email, request.NewPassword);
 
             return Ok("Password changed");
         }

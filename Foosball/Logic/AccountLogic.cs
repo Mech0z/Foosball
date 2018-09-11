@@ -14,11 +14,13 @@ namespace Foosball.Logic
     {
         private readonly IUserLoginInfoRepository _userLoginInfoRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailLogic _emailLogic;
 
-        public AccountLogic(IUserLoginInfoRepository userLoginInfoRepository, IUserRepository userRepository)
+        public AccountLogic(IUserLoginInfoRepository userLoginInfoRepository, IUserRepository userRepository, IEmailLogic emailLogic)
         {
             _userLoginInfoRepository = userLoginInfoRepository;
             _userRepository = userRepository;
+            _emailLogic = emailLogic;
         }
 
         public async Task<LoginResult> Login(string email, string password, bool rememberMe, string deviceName)
@@ -113,9 +115,10 @@ namespace Foosball.Logic
 
             var success = await _userLoginInfoRepository.AdminChangePassword(email, newPassword);
 
-            //TODO send email
+            if (!success)
+                return false;
 
-            return success;
+            return await _emailLogic.SendEmail(email, "Your new password", $"New password : {newPassword}");
         }
 
         public string CreatePassword(int length)
