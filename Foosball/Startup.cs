@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Foosball.Logic;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Models;
 using Repository;
 using Swashbuckle.AspNetCore.Swagger;
@@ -31,8 +27,13 @@ namespace Foosball
         {
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
+
+            services.AddMvc(
+                config => {
+                    config.Filters.Add(typeof(CustomExceptionFilter));
+                }
+            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1); ;
+
             services.AddScoped<ClaimRequirementFilter>();
 
             services.AddSwaggerGen(c =>
@@ -78,6 +79,7 @@ namespace Foosball
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
+
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

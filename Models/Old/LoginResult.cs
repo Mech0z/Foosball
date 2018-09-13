@@ -13,5 +13,6 @@ namespace Models.Old
         public LoginToken LoginToken { get; set; }
         public bool LoginFailed { get; set; } 
         public List<string> Roles { get; set; }
+        public bool Expired { get; set; }
     }
 }

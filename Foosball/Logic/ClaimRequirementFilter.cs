@@ -50,7 +50,14 @@ namespace Foosball.Logic
                 }
                 else
                 {
-                    hasClaim = accountLogic.ValidateLogin(email, token, deviceName, _claim.Value).Result.Success;
+                    var validateLoginResult = accountLogic.ValidateLogin(email, token, deviceName, _claim.Value).Result;
+
+                    if (validateLoginResult.Expired)
+                    {
+                        throw new LoginExpiredException("Token Expired, please relogin!");
+                    }
+
+                    hasClaim = validateLoginResult.Success;
                 }
 
                 if (hasClaim)

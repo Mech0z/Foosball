@@ -43,12 +43,13 @@ namespace Foosball.Logic
 
         public async Task<LoginResult> ValidateLogin(string email, string token, string deviceName, string role = null)
         {
-            var loginResult =
+            LoginResult loginResult =
                 await _userLoginInfoRepository.VerifyLogin(email, token, deviceName);
 
             if (role != null && !loginResult.Roles.Contains(role))
             {
-                return new LoginResult{LoginFailed = true};
+                loginResult.LoginFailed = true;
+                return loginResult;
             }
 
             return loginResult;

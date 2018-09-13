@@ -26,7 +26,15 @@ namespace Repository
             var loginToken =
                 existingUserLogin?.Tokens.SingleOrDefault(x => x.DeviceName == deviceName && x.Token == token);
 
-            if (loginToken == null || loginToken.Expirytime < DateTime.Now) return new LoginResult{LoginFailed = true};
+            if (loginToken == null)
+            {
+                return new LoginResult {LoginFailed = true};
+            }
+
+            if (loginToken.Expirytime < DateTime.Now)
+            {
+                return new LoginResult {LoginFailed = true, Expired = true};
+            }
 
             if(loginToken.Expirytime > DateTime.Now.AddHours(1))
             {
