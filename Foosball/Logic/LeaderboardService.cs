@@ -48,9 +48,9 @@ namespace Foosball.Logic
 
             var latestLeaderboardViews = await _leaderboardViewRepository.GetLeaderboardViews();
 
-            foreach (var season in seasons)
+            foreach (Season season in seasons)
             {
-                var existingLeaderboard = latestLeaderboardViews.Any(x => x.SeasonName == season.Name);
+                bool existingLeaderboard = latestLeaderboardViews.Any(x => x.SeasonName == season.Name);
 
                 if (existingLeaderboard == false)
                 {
@@ -59,9 +59,10 @@ namespace Foosball.Logic
                 }
             }
 
-            foreach (var season in latestLeaderboardViews)
+            foreach (LeaderboardView leaderboardView in latestLeaderboardViews)
             {
-                season.Entries = season.Entries.OrderByDescending(x => x.EloRating).ToList();
+                leaderboardView.Entries = leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList();
+                leaderboardView.StartDate = seasons.First(x => x.Name == leaderboardView.SeasonName).StartDate;
             }
 
             return latestLeaderboardViews.OrderByDescending(x => x.SeasonName).ToList();

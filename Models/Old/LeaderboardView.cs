@@ -15,5 +15,6 @@ namespace Models.Old
         public List<LeaderboardViewEntry> Entries { get; set; }
         public string SeasonName { get; set; }
         public DateTime? Timestamp { get; set; }
+        public DateTime StartDate { get; set; }
     }
 }
