@@ -80,6 +80,8 @@ namespace Foosball
                 app.UseHttpsRedirection();
             }
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

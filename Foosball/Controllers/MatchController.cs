@@ -96,7 +96,7 @@ namespace Foosball.Controllers
 
             var currentSeason = seasons.Single(x => x.EndDate == null);
 
-            var isEdit = saveMatchesRequest.Matches.Any(x => x.Id == Guid.Empty);
+            var isEdit = saveMatchesRequest.Matches.Any(x => x.Id != Guid.Empty);
             var fromPreviousSeason = saveMatchesRequest.Matches.Any(x => x.TimeStampUtc < currentSeason.StartDate);
 
             if (isEdit && fromPreviousSeason && !hasAdminClaim)
