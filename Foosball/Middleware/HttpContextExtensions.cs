@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Models;
 
-namespace Foosball
+namespace Foosball.Middleware
 {
     public static class HttpContextExtensions
     {

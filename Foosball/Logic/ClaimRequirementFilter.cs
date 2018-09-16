@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using Foosball.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,7 +55,7 @@ namespace Foosball.Logic
 
                     if (validateLoginResult.Expired)
                     {
-                        throw new LoginExpiredException("Token Expired, please relogin!");
+                        throw new LoginExpiredException();
                     }
 
                     hasClaim = validateLoginResult.Success;

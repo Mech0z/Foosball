@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
-namespace Foosball
+namespace Foosball.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
@@ -28,12 +27,15 @@ namespace Foosball
                         // there's no StatusCodePagesMiddleware in app
                         if (!context.Response.HasStarted)
                         {
-                            
+
                         }
                     }
                 }
             }
-            
+            catch (LoginExpiredException)
+            {
+                context.Response.StatusCode = 419;
+            }
             catch (Exception ex)
             {
             }
