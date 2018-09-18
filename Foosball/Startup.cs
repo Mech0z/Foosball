@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Foosball.Hubs;
 using Foosball.Logic;
 using Foosball.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +57,8 @@ namespace Foosball
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEmailLogic, EmailLogic>();
 
+            services.AddSignalR();
+
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -78,6 +81,11 @@ namespace Foosball
             }
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MatchAddedHub>("/matchAddedHub");
+            });
 
             app.UseMvc();
             app.UseSwagger();

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Foosball.Hubs;
 using Foosball.Logic;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Models;
 using Models.Old;
 using Repository;
@@ -21,6 +23,7 @@ namespace Foosball.Controllers
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly ISeasonLogic _seasonLogic;
         private readonly IAccountLogic _accountLogic;
+        private readonly IHubContext<MatchAddedHub> _messageHubContext;
         private readonly IMatchRepository _matchRepository;
         private readonly IMatchupResultRepository _matchupResultRepository;
 
@@ -29,7 +32,8 @@ namespace Foosball.Controllers
             ILeaderboardService leaderboardService,
             ILeaderboardViewRepository leaderboardViewRepository,
             ISeasonLogic seasonLogic,
-            IAccountLogic accountLogic)
+            IAccountLogic accountLogic,
+            IHubContext<MatchAddedHub> messageHubContext)
         {
             _matchRepository = matchRepository;
             _matchupResultRepository = matchupResultRepository;
@@ -37,6 +41,7 @@ namespace Foosball.Controllers
             _leaderboardViewRepository = leaderboardViewRepository;
             _seasonLogic = seasonLogic;
             _accountLogic = accountLogic;
+            _messageHubContext = messageHubContext;
         }
 
         // GET: /api/Match/GetAll
@@ -147,6 +152,7 @@ namespace Foosball.Controllers
                 }
             }
 
+            await _messageHubContext.Clients.All.SendAsync("test", "test", "test");
             return Ok();
         }
 
