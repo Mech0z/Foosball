@@ -152,7 +152,7 @@ namespace Foosball.Controllers
                 }
             }
 
-            await _messageHubContext.Clients.All.SendAsync("test", "test", "test");
+            await _messageHubContext.Clients.All.SendAsync("matchAdded", "test", "test");
             return Ok();
         }
 
