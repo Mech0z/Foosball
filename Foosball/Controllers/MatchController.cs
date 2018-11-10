@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Foosball.Hubs;
 using Foosball.Logic;
 using Foosball.RequestResponse;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Models;
@@ -16,6 +17,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class MatchController : Controller
     {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Old;
@@ -12,6 +13,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class PlayerController : Controller
     {

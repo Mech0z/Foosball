@@ -2,6 +2,7 @@
 using Foosball.Logic;
 using Foosball.Middleware;
 using Foosball.RequestResponse;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -9,6 +10,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class AccountController : Controller
     {

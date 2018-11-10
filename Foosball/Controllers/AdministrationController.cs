@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -9,6 +10,7 @@ namespace Foosball.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ClaimRequirement("Permission", ClaimRoles.Admin)]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class AdministrationController : Controller
     {

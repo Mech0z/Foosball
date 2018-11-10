@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foosball.Logic;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Old;
@@ -9,6 +10,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class LeaderboardController : Controller
     {
