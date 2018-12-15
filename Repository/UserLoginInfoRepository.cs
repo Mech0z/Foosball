@@ -50,6 +50,10 @@ namespace Repository
         {
             var existingUserLogin = await Collection.AsQueryable()
                 .SingleOrDefaultAsync(x => x.Email.ToLowerInvariant() == email.ToLowerInvariant());
+            if(existingUserLogin == null)
+            {
+                return new LoginResult();
+            }
             var correctPassword = BCrypt.Net.BCrypt.Verify(password, existingUserLogin.HashedPassword);
 
             if (!correctPassword) { return new LoginResult(); }
