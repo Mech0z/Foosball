@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
+using Foosball.Middleware;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -110,12 +111,19 @@ namespace Foosball.Controllers
         [ClaimRequirement("Permission", ClaimRoles.Player)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
+            var loginSession = HttpContext.GetLoginSession();
+
+            if(request.Email != loginSession.Email)
+            {
+                return BadRequest("Email does not match login");
+            }
+
             if (request.NewPassword.Length < 6)
             {
                 return BadRequest("Password too short");
             }
 
-            //await _userRepository.ChangePassword(request.Email, request.NewPassword);
+            await _userRepository.ChangePassword(request.Email, request.NewPassword);
 
             return Ok("Password changed");
         }
