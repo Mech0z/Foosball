@@ -129,7 +129,7 @@ namespace Foosball.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> RequestPassword([FromHeader] string email)
+        public async Task<IActionResult> RequestPassword([FromQuery] string email)
         {
             var requestResult = await _accountLogic.RequestPassword(email);
 
