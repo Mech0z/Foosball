@@ -101,15 +101,9 @@ namespace Repository
             return true;
         }
 
-        public async Task<bool> ChangePassword(string email, string oldPassword, string newPassword)
+        public async Task<bool> ChangePassword(string email, string newPassword)
         {
             var existingUserLogin = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Email == email);
-            var correctPassword = BCrypt.Net.BCrypt.Verify(oldPassword, existingUserLogin.HashedPassword);
-
-            if (!correctPassword)
-            {
-                return false;
-            }
 
             var newHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             existingUserLogin.HashedPassword = newHash;
