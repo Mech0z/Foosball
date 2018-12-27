@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.Middleware;
 using Foosball.RequestResponse;
@@ -55,6 +57,39 @@ namespace Foosball.Controllers
                 ExpiryTime = result.LoginToken.Expirytime,
                 LoginFailed = result.LoginFailed
             };
+        }
+
+        [HttpPost]
+        [ClaimRequirement("Permission", ClaimRoles.Player)]
+        public async Task<IActionResult> ChangeEmail(ChangeEmailRequest request)
+        {
+            var loginSession = HttpContext.GetLoginSession();
+
+            if (!IsValidEmail(request.NewEmail))
+            {
+                return BadRequest();
+            }
+
+            var result = await _accountLogic.ChangeEmail(loginSession.Email, request.NewEmail);
+            
+            if (result)
+                return Ok();
+
+            return BadRequest();
+        }
+
+        public bool IsValidEmail(string emailaddress)
+        {
+            try
+            {
+                MailAddress m = new MailAddress(emailaddress);
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
 
         [HttpPost]
