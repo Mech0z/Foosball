@@ -31,60 +31,62 @@ namespace Foosball.Logic
             var headers = context.HttpContext.Request.Headers;
 
             var tokenSuccess = headers.TryGetValue("Token", out var token);
+            if(!tokenSuccess) throw new AccessViolationException("Invalid 'Token' Header");
 
             var emailSuccess = headers.TryGetValue("Email", out var email);
+            if (!emailSuccess) throw new AccessViolationException("Invalid 'Email' Header");
 
             var deviceNameSuccess = headers.TryGetValue("DeviceName", out var deviceName);
+            if (!deviceNameSuccess) throw new AccessViolationException("Invalid 'DeviceName' Header");
             
-            if (tokenSuccess && emailSuccess && deviceNameSuccess)
+            var accountLogic = context.HttpContext.RequestServices.GetService<IAccountLogic>();
+            bool hasClaim;
+            if (_claim.Value == ClaimRoles.Unauth.ToString())
             {
-                
+                context.HttpContext.User.AddIdentity(
+                    new ClaimsIdentity(new List<Claim> { new Claim("Role", _claim.Value) }));
 
-                var accountLogic = context.HttpContext.RequestServices.GetService<IAccountLogic>();
-                bool hasClaim;
-                if (_claim.Value == ClaimRoles.Unauth.ToString())
+                hasClaim = true;
+            }
+            else
+            {
+                var validateLoginResult = accountLogic.ValidateLogin(email, token, deviceName, _claim.Value).Result;
+
+                if (validateLoginResult.Expired)
+                {
+                    throw new LoginExpiredException();
+                }
+
+                
+                if (validateLoginResult.Roles.Contains(ClaimRoles.Admin.ToString()))
                 {
                     context.HttpContext.User.AddIdentity(
-                        new ClaimsIdentity(new List<Claim> { new Claim("Role", _claim.Value) }));
-
-                    hasClaim = true;
-                }
-                else
-                {
-                    var validateLoginResult = accountLogic.ValidateLogin(email, token, deviceName, _claim.Value).Result;
-
-                    if (validateLoginResult.Expired)
-                    {
-                        throw new LoginExpiredException();
-                    }
-
-                    hasClaim = validateLoginResult.Success;
+                        new ClaimsIdentity(new List<Claim> { new Claim("Role", ClaimRoles.Admin.ToString()) }));
+                    validateLoginResult.Success = true;
                 }
 
-                if (hasClaim)
+                if (validateLoginResult.Success)
                 {
                     context.HttpContext.User.AddIdentity(
                         new ClaimsIdentity(new List<Claim> {new Claim("Role", _claim.Value)}));
                 }
 
-                if (!hasClaim && _claim.Value != ClaimRoles.Admin.ToString())
+                hasClaim = validateLoginResult.Success;
+            }
+
+            if (!hasClaim && _claim.Value != ClaimRoles.Admin.ToString())
+            {
+                hasClaim = accountLogic.ValidateLogin(email, token, deviceName, ClaimRoles.Admin.ToString()).Result.Success;
+                if (hasClaim)
                 {
-                    hasClaim = accountLogic.ValidateLogin(email, token, deviceName, ClaimRoles.Admin.ToString()).Result.Success;
-                    if (hasClaim)
-                    {
-                        context.HttpContext.User.AddIdentity(
-                            new ClaimsIdentity(new List<Claim> { new Claim("Role", ClaimRoles.Admin.ToString())}));
-                    }
-                }
-                
-                if (!hasClaim)
-                {
-                    throw new AccessViolationException();
+                    context.HttpContext.User.AddIdentity(
+                        new ClaimsIdentity(new List<Claim> { new Claim("Role", ClaimRoles.Admin.ToString())}));
                 }
             }
-            else
+            
+            if (!hasClaim)
             {
-                throw new AccessViolationException();
+                throw new AccessViolationException($"Missing Role '{_claim.Value}' on current user");
             }
 
             context.HttpContext.User.AddIdentity(

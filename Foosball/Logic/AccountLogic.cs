@@ -49,6 +49,7 @@ namespace Foosball.Logic
             if (role != null && !loginResult.Roles.Contains(role))
             {
                 loginResult.LoginFailed = true;
+                loginResult.Success = false;
                 return loginResult;
             }
 
