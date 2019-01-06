@@ -139,5 +139,10 @@ namespace Foosball.Logic
         {
             return await _userLoginInfoRepository.Logout(session.Email, session.Token, session.DeviceName);
         }
+
+        public async Task<bool> ChangeEmail(string existingEmail, string newEmail)
+        {
+            return await _userRepository.ChangeEmail(existingEmail, newEmail);
+        }
     }
 }

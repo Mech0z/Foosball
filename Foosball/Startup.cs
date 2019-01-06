@@ -1,11 +1,8 @@
-﻿using System.Net;
-using Foosball.Hubs;
+﻿using Foosball.Hubs;
 using Foosball.Logic;
 using Foosball.Middleware;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +27,7 @@ namespace Foosball
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); ;
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); ;
 
             services.AddScoped<ClaimRequirementFilter>();
 
