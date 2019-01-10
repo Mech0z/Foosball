@@ -78,7 +78,7 @@ namespace Foosball.Controllers
             return BadRequest();
         }
 
-        public bool IsValidEmail(string emailaddress)
+        private bool IsValidEmail(string emailaddress)
         {
             try
             {
