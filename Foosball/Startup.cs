@@ -84,6 +84,7 @@ namespace Foosball
                 routes.MapHub<MatchAddedHub>("/matchAddedHub");
             });
 
+            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

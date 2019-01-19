@@ -31,7 +31,7 @@ namespace Repository
                 from e in Collection.AsQueryable()
                 select e;
 
-            return await IAsyncCursorSourceExtensions.ToListAsync(seasons);
+            return await seasons.ToListAsync();
         }
 
         public async Task CreateNewSeason(Season season)
