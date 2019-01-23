@@ -33,7 +33,7 @@ namespace Foosball.Controllers
         [HttpPost]
         public async Task<IActionResult> GetSeasons()
         {
-            List<Season> seasons = await _seasonLogic.GetSeasons();
+            var seasons = await _seasonLogic.GetSeasons();
             return Ok(seasons);
         }
     }

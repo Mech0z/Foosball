@@ -36,7 +36,7 @@ namespace Foosball.Logic
             var newSeason = new Season
             {
                 StartDate = activeSeason != null ? DateTime.UtcNow.Date.AddDays(1) : DateTime.UtcNow.Date,
-                Name = string.Format("Season {0}", newSeasonNumber)
+                Name = $"Season {newSeasonNumber}"
             };
 
             await _seasonRepository.CreateNewSeason(newSeason);
