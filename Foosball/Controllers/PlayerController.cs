@@ -24,7 +24,7 @@ namespace Foosball.Controllers
         private readonly ISeasonLogic _seasonLogic;
         private readonly IUserLogic _userLogic;
         private readonly IAccountLogic _accountLogic;
-        private readonly IUserLoginInfoRepository userLoginInfoRepository;
+        private readonly IUserLoginInfoRepository _userLoginInfoRepository;
 
         public PlayerController(IMatchRepository matchRepository,
             IUserRepository userRepository, 
@@ -41,7 +41,7 @@ namespace Foosball.Controllers
             _seasonLogic = seasonLogic;
             _userLogic = userLogic;
             _accountLogic = accountLogic;
-            this.userLoginInfoRepository = userLoginInfoRepository;
+            _userLoginInfoRepository = userLoginInfoRepository;
         }
 
         [HttpGet]
@@ -127,7 +127,7 @@ namespace Foosball.Controllers
                 return BadRequest("Password too short");
             }
 
-            await userLoginInfoRepository.ChangePassword(request.Email, request.NewPassword);
+            await _userLoginInfoRepository.ChangePassword(request.Email, request.NewPassword);
 
             return Ok("Password changed");
         }

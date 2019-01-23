@@ -24,7 +24,6 @@ namespace Foosball.Controllers
         private readonly ILeaderboardService _leaderboardService;
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly ISeasonLogic _seasonLogic;
-        private readonly IAccountLogic _accountLogic;
         private readonly IHubContext<MatchAddedHub> _messageHubContext;
         private readonly IMatchRepository _matchRepository;
         private readonly IMatchupResultRepository _matchupResultRepository;
@@ -34,7 +33,6 @@ namespace Foosball.Controllers
             ILeaderboardService leaderboardService,
             ILeaderboardViewRepository leaderboardViewRepository,
             ISeasonLogic seasonLogic,
-            IAccountLogic accountLogic,
             IHubContext<MatchAddedHub> messageHubContext)
         {
             _matchRepository = matchRepository;
@@ -42,7 +40,6 @@ namespace Foosball.Controllers
             _leaderboardService = leaderboardService;
             _leaderboardViewRepository = leaderboardViewRepository;
             _seasonLogic = seasonLogic;
-            _accountLogic = accountLogic;
             _messageHubContext = messageHubContext;
         }
 
@@ -173,7 +170,7 @@ namespace Foosball.Controllers
                 return false;
             }
 
-            if ((team1Score == 8 && team2Score <= 6) || (team1Score <= 6 && team2Score == 8))
+            if (team1Score == 8 && team2Score <= 6 || team1Score <= 6 && team2Score == 8)
             {
                 return true;
             }
@@ -188,7 +185,7 @@ namespace Foosball.Controllers
                 return team1Score == team2Score + 2 || team1Score == team2Score - 2;
             }
 
-            return true;
+            return false;
         }
 
         [HttpGet]
