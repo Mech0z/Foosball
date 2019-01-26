@@ -4,7 +4,6 @@ using Foosball.Logic;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using Models.Old;
 
 namespace Foosball.Controllers
 {

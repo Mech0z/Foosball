@@ -92,13 +92,13 @@ namespace Foosball.Controllers
             }
             
             var seasons = await _seasonLogic.GetSeasons();
-
-            if (seasons.All(x => x.EndDate != null))
+            var now = DateTime.Now;
+            if (seasons.All(x => x.StartDate <= now && x.EndDate >= now))
             {
                 return BadRequest(); //"No active seaons"
             }
-
-            var currentSeason = seasons.Single(x => x.EndDate == null);
+            
+            var currentSeason = seasons.Single(x => x.StartDate <= now && x.EndDate >= now);
 
             var isEdit = saveMatchesRequest.Matches.Any(x => x.Id != Guid.Empty);
             var fromPreviousSeason = saveMatchesRequest.Matches.Any(x => x.TimeStampUtc < currentSeason.StartDate);
