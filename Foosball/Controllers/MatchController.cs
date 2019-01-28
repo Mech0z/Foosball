@@ -97,8 +97,8 @@ namespace Foosball.Controllers
             {
                 return BadRequest(); //"No active seaons"
             }
-            
-            var currentSeason = seasons.Single(x => x.StartDate <= now && x.EndDate >= now);
+
+            var currentSeason = seasons.Single(x => x.StartDate <= now && (x.EndDate >= now || x.EndDate == null));
 
             var isEdit = saveMatchesRequest.Matches.Any(x => x.Id != Guid.Empty);
             var fromPreviousSeason = saveMatchesRequest.Matches.Any(x => x.TimeStampUtc < currentSeason.StartDate);
