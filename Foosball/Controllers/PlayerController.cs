@@ -103,7 +103,7 @@ namespace Foosball.Controllers
                 return BadRequest("Email already taken");
             }
 
-            var createResult = await _accountLogic.CreateUser(request.Email, request.Username, request.Password);
+            var createResult = await _accountLogic.CreateUser(request.Email.ToLower(), request.Username, request.Password);
 
             if (!createResult)
                 return BadRequest();
