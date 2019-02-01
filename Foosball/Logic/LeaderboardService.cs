@@ -68,7 +68,7 @@ namespace Foosball.Logic
                 leaderboardView.StartDate = seasons.First(x => x.Name == leaderboardView.SeasonName).StartDate;
             }
 
-            return latestLeaderboardViews.OrderByDescending(x => x.SeasonName).ToList();
+            return latestLeaderboardViews.OrderByDescending(x => x.StartDate).ToList();
         }
 
         public void AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match)
