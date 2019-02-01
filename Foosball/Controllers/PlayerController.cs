@@ -98,7 +98,7 @@ namespace Foosball.Controllers
                 return BadRequest("Username must be at least 6 characters long");
             }
 
-            if (users.Any(x => x.Email == request.Email))
+            if (users.Any(x => x.Email.ToLower() == request.Email.ToLower()))
             {
                 return BadRequest("Email already taken");
             }
