@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Foosball.RequestResponse;
-using Microsoft.EntityFrameworkCore.Internal;
 using Models.Old;
 using Repository;
 
@@ -10,13 +9,15 @@ namespace Foosball.Logic
 {
     public class UserLogic : IUserLogic
     {
-        private readonly ILeaderboardViewRepository leaderboardViewRepository;
+        private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly IMatchRepository _matchRepository;
+        private readonly ISeasonRepository _seasonRepository;
 
-        public UserLogic(ILeaderboardViewRepository leaderboardViewRepository, IMatchRepository matchRepository)
+        public UserLogic(ILeaderboardViewRepository leaderboardViewRepository, IMatchRepository matchRepository, ISeasonRepository seasonRepository)
         {
-            this.leaderboardViewRepository = leaderboardViewRepository;
+            _leaderboardViewRepository = leaderboardViewRepository;
             _matchRepository = matchRepository;
+            _seasonRepository = seasonRepository;
         }
 
         public async Task<EggStats> GetEggStats(string email)
@@ -58,9 +59,15 @@ namespace Foosball.Logic
         public async Task<List<PlayerLeaderboardEntry>> GetPlayerLeaderboardEntries(string email)
         {
             var result = new List<PlayerLeaderboardEntry>();
-            var leaderboards = await leaderboardViewRepository.GetLeaderboardViews();
+            var leaderboards = await _leaderboardViewRepository.GetLeaderboardViews();
+            var seasons = await _seasonRepository.GetSeasons();
 
-            foreach (var leaderboard in leaderboards)
+            foreach (var leaderboardView in leaderboards)
+            {
+                leaderboardView.StartDate = seasons.Single(x => x.Name == leaderboardView.SeasonName).StartDate;
+            }
+
+            foreach (var leaderboard in leaderboards.OrderBy(x => x.StartDate))
             {
                 var leaderboardEntries = leaderboard.Entries.OrderByDescending(x => x.EloRating).ToList();
                 var playerEntry = leaderboardEntries.SingleOrDefault(x => x.UserName == email);
