@@ -67,6 +67,14 @@ namespace Repository
             {
                 existingToken.Expirytime = expirytime;
                 existingToken.Token = tokenGuid.ToString();
+                for (int i = 0; i < existingUserLogin.Tokens.Count; i++)
+                {
+                    var loginToken = existingUserLogin.Tokens[i];
+                    if (loginToken.Expirytime < DateTime.Now.AddDays(-1))
+                    {
+                        existingUserLogin.Tokens.Remove(loginToken);
+                    }
+                }
             }
             else
             {
@@ -77,7 +85,7 @@ namespace Repository
                     Expirytime = expirytime,
                 });
             }
-            
+
             await Collection.ReplaceOneAsync(i => i.Id == existingUserLogin.Id, existingUserLogin);
 
             var newToken = existingUserLogin.Tokens.SingleOrDefault(x => x.Token == tokenGuid.ToString());
