@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Models;
 using Models.Old;
 
 namespace Repository
@@ -14,5 +15,6 @@ namespace Repository
         Task<List<Match>> GetPlayerMatches(string email);
         Task<List<Match>> GetMatchesByTimeStamp(DateTime time);
         Task<List<string>> GetUniqueEmails();
+        Task<long> DeleteMatch(Guid matchId, LoginSession loginSession);
     }
 }

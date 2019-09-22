@@ -50,8 +50,10 @@ namespace Models.Old
 
         public int? Points { get; set; }
 
-        public String SeasonName { get; set; }
+        public string SeasonName { get; set; }
 
         public string SubmittedBy { get; set; }
+
+        public EditedType EditedType { get; set; }
     }
 }

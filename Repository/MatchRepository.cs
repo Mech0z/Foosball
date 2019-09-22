@@ -21,7 +21,7 @@ namespace Repository
             var result = string.IsNullOrWhiteSpace(season)
                 ? Collection.AsQueryable()
                 : Collection.AsQueryable()
-                    .Where(x => x.SeasonName == season);
+                    .Where(x => x.SeasonName == season && (x.EditedType == null || x.EditedType.Deleted == false));
 
             return await result.ToListAsync();
         }
@@ -61,14 +61,18 @@ namespace Repository
 
         public async Task<List<Match>> GetRecentMatches(int numberOfMatches)
         {
-            var result = Collection.AsQueryable().OrderByDescending(x => x.TimeStampUtc).Take(numberOfMatches);
+            var result = Collection.AsQueryable()
+                .Where(x => (x.EditedType == null || x.EditedType.Deleted == false))
+                .OrderByDescending(x => x.TimeStampUtc)
+                .Take(numberOfMatches);
             
             return await result.ToListAsync();
         }
 
         public async Task<List<Match>> GetPlayerMatches(string email)
         {
-            var result = Collection.AsQueryable().Where(x => x.PlayerList.Contains(email));
+            var result = Collection.AsQueryable()
+                .Where(x => x.PlayerList.Contains(email) && (x.EditedType == null || x.EditedType.Deleted == false));
             
             return await result.ToListAsync();
         }
@@ -83,6 +87,27 @@ namespace Repository
             {
                 await Collection.ReplaceOneAsync(i => i.Id == match.Id, match);
             }
+        }
+
+        public async Task<long> DeleteMatch(Guid matchId, LoginSession loginSession)
+        {
+            Match match = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Id == matchId);
+            if (match != null)
+            {
+                match.EditedType = new EditedType
+                {
+                    DeleteTime = DateTime.Now,
+                    Deleted = true,
+                    DeletedBy = loginSession.Email
+                };
+
+                await Collection.ReplaceOneAsync(i => i.Id == match.Id, match);
+                return 1;
+            }
+            
+            return 0;
+            //var deleteResult = await Collection.DeleteOneAsync(x => x.Id == matchId);
+            //return deleteResult.DeletedCount;
         }
     }
 }

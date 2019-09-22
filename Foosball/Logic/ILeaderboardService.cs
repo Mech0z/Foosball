@@ -9,6 +9,6 @@ namespace Foosball.Logic
         Task<LeaderboardView> RecalculateLeaderboard(string season);
         LeaderboardView GetActiveLeaderboard();
         Task<List<LeaderboardView>> GetLatestLeaderboardViews();
-        void AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match);
+        bool AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match);
     }
 }

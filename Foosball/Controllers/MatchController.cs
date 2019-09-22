@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Hubs;
 using Foosball.Logic;
+using Foosball.Middleware;
 using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -230,6 +231,26 @@ namespace Foosball.Controllers
         public async Task<IEnumerable<Match>> TodaysMatches()
         {
             return await _matchRepository.GetMatchesByTimeStamp(DateTime.Today);
+        }
+
+        [HttpPost]
+        [ClaimRequirement("Permission", ClaimRoles.Admin)]
+        public async Task<ActionResult> DeleteMatch(Guid matchId)
+        {
+            var loginSession = HttpContext.GetLoginSession();
+            var seasons = await _seasonLogic.GetSeasons();
+
+            var deleteCount = await _matchRepository.DeleteMatch(matchId, loginSession);
+            if (deleteCount > 0)
+            {
+                foreach (Season season in seasons)
+                {
+                    await _leaderboardService.RecalculateLeaderboard(season.Name);
+                }
+                return Ok();
+            }
+
+            return BadRequest();
         }
     }
 }

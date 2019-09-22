@@ -24,12 +24,19 @@ namespace Foosball.Logic
         public async Task<LeaderboardView> RecalculateLeaderboard(string season)
         {
             var matches = (await _matchRepository.GetMatches(season)).OrderBy(x => x.TimeStampUtc);
-            var leaderboardView = new LeaderboardView {SeasonName = season};
+
+            var existingLeaderboard = await _leaderboardViewRepository.GetLeaderboardView(season);
             
+            var leaderboardView = existingLeaderboard ?? new LeaderboardView {SeasonName = season};
+            leaderboardView.Entries = new List<LeaderboardViewEntry>(); //Clear old matches if existing leaderboard exists
+
             foreach (var match in matches)
-            {
-                AddMatchToLeaderboard(leaderboardView, match);
-                await _matchRepository.Upsert(match);
+            { 
+                var matchPointsChanged = AddMatchToLeaderboard(leaderboardView, match);
+                if (matchPointsChanged)
+                {
+                    await _matchRepository.Upsert(match);
+                }
             }
             leaderboardView.Entries = leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList();
 
@@ -71,8 +78,9 @@ namespace Foosball.Logic
             return latestLeaderboardViews.OrderByDescending(x => x.StartDate).ToList();
         }
 
-        public void AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match)
+        public bool AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match)
         {
+            var existingPointsOnMatch = match.Points;
             var leaderboardEntries = leaderboardView.Entries;
 
             //Team1
@@ -81,8 +89,8 @@ namespace Foosball.Logic
             var player2 = match.PlayerList[1];
             var existingPlayer2 = leaderboardEntries.SingleOrDefault(x => x.UserName == player2);
 
-            var team1AvgElo = existingPlayer1 != null ? existingPlayer1.EloRating : 1500;
-            team1AvgElo += existingPlayer2 != null ? existingPlayer2.EloRating : 1500;
+            var team1AvgElo = existingPlayer1?.EloRating ?? 1500;
+            team1AvgElo += existingPlayer2?.EloRating ?? 1500;
 
             //Team2
             var player3 = match.PlayerList[2];
@@ -90,13 +98,13 @@ namespace Foosball.Logic
             var player4 = match.PlayerList[3];
             var existingPlayer4 = leaderboardEntries.SingleOrDefault(x => x.UserName == player4);
 
-            var team2AvgElo = existingPlayer3 != null ? existingPlayer3.EloRating : 1500;
-            team2AvgElo += existingPlayer4 != null ? existingPlayer4.EloRating : 1500;
+            var team2AvgElo = existingPlayer3?.EloRating ?? 1500;
+            team2AvgElo += existingPlayer4?.EloRating ?? 1500;
 
             var elo = new EloRating();
             var result = elo.CalculateRating(team1AvgElo/2, team2AvgElo/2, match.MatchResult.Team1Won);
 
-            match.Points = (int)result;
+            match.Points = (int) result;
 
             if (existingPlayer1 == null)
             {
@@ -137,6 +145,8 @@ namespace Foosball.Logic
                 UpdateExistingLeaderboardEntry(existingPlayer4.UserName, leaderboardEntries, match, result,
                     !match.MatchResult.Team1Won);
             }
+
+            return existingPointsOnMatch != match.Points;
         }
 
         public LeaderboardViewEntry CreatePlayer(string playerName, Match match, double result, bool won)

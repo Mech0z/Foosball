@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Microsoft.AspNetCore.Cors;
@@ -18,8 +19,7 @@ namespace Foosball.Controllers
         private readonly ISeasonLogic _seasonLogic;
 
         public LeaderboardController(ILeaderboardService leaderboardService,
-            ISeasonLogic seasonLogic,
-            IAccountLogic accountLogic)
+            ISeasonLogic seasonLogic)
         {
             _leaderboardService = leaderboardService;
             _seasonLogic = seasonLogic;
@@ -33,7 +33,7 @@ namespace Foosball.Controllers
 
         [HttpPost]
         [ClaimRequirement("Permission", ClaimRoles.Admin)]
-        public async Task<IActionResult> ResetLeaderboard()
+        public async Task<IActionResult> ResetLeaderboards()
         {
             var seasons = await _seasonLogic.GetSeasons();
             foreach (var season in seasons)
@@ -42,6 +42,24 @@ namespace Foosball.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost]
+        [ClaimRequirement("Permission", ClaimRoles.Admin)]
+        public async Task<IActionResult> ResetLeaderboard(string seasonName)
+        {
+            var seasons = await _seasonLogic.GetSeasons();
+
+            var season = seasons.SingleOrDefault(x => x.Name == seasonName);
+
+            if (season != null)
+            {
+                await _leaderboardService.RecalculateLeaderboard(season.Name);
+                return Ok();
+            }
+
+            return BadRequest();
+            
         }
     }
 }
