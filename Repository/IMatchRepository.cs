@@ -9,6 +9,8 @@ namespace Repository
     public interface IMatchRepository
     {
         Task Upsert(Match match);
+        Task<long> UnDeleteMatch(Guid matchId);
+        Task<List<Match>> GetDeletedMatches();
         Task<List<Match>> GetMatches(string season);
         Task<Match> GetByTimeStamp(DateTime dateTime);
         Task<List<Match>> GetRecentMatches(int numberOfMatches);

@@ -44,6 +44,27 @@ namespace Foosball.Controllers
             _messageHubContext = messageHubContext;
         }
 
+        [HttpGet]
+        [ClaimRequirement("Permission", ClaimRoles.Admin)]
+        public async Task<IEnumerable<Match>> GetDeletedMatchesAsync()
+        {
+            var matches = await _matchRepository.GetDeletedMatches();
+            return matches;
+        }
+
+        [HttpPost]
+        [ClaimRequirement("Permission", ClaimRoles.Admin)]
+        public async Task<ActionResult> UnDeleteMatch(Guid matchId)
+        {
+            var updateCount = await _matchRepository.UnDeleteMatch(matchId);
+            if (updateCount > 0)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
         // GET: /api/Match/GetAll
         [HttpGet]
         public async Task<IEnumerable<Match>> GetAll()

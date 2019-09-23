@@ -16,6 +16,12 @@ namespace Repository
 
         }
 
+        public async Task<List<Match>> GetDeletedMatches()
+        {
+            var matches = await Collection.AsQueryable().Where(x => x.EditedType != null && x.EditedType.Deleted).ToListAsync();
+            return matches;
+        }
+
         public async Task<List<Match>> GetMatches(string season)
         {
             var result = string.IsNullOrWhiteSpace(season)
@@ -108,6 +114,14 @@ namespace Repository
             return 0;
             //var deleteResult = await Collection.DeleteOneAsync(x => x.Id == matchId);
             //return deleteResult.DeletedCount;
+        }
+
+        public async Task<long> UnDeleteMatch(Guid matchId)
+        {
+            var match = await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Id == matchId);
+            match.EditedType = null;
+            var result = await Collection.ReplaceOneAsync(i => i.Id == match.Id, match);
+            return result.ModifiedCount;
         }
     }
 }
