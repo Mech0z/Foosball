@@ -21,7 +21,7 @@ namespace Foosball.Controllers
             _accountLogic = accountLogic;
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<GetUserMappingsResponse> GetUserMappings()
         {
             return await _accountLogic.GetUserMappings();
