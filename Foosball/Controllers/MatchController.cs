@@ -52,19 +52,6 @@ namespace Foosball.Controllers
             return matches;
         }
 
-        [HttpPost]
-        [ClaimRequirement("Permission", ClaimRoles.Admin)]
-        public async Task<ActionResult> UnDeleteMatch(Guid matchId)
-        {
-            var updateCount = await _matchRepository.UnDeleteMatch(matchId);
-            if (updateCount > 0)
-            {
-                return Ok();
-            }
-
-            return BadRequest();
-        }
-
         // GET: /api/Match/GetAll
         [HttpGet]
         public async Task<IEnumerable<Match>> GetAll()
@@ -263,6 +250,24 @@ namespace Foosball.Controllers
 
             var deleteCount = await _matchRepository.DeleteMatch(matchId, loginSession);
             if (deleteCount > 0)
+            {
+                foreach (Season season in seasons)
+                {
+                    await _leaderboardService.RecalculateLeaderboard(season.Name);
+                }
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [ClaimRequirement("Permission", ClaimRoles.Admin)]
+        public async Task<ActionResult> UnDeleteMatch(Guid matchId)
+        {
+            var updateCount = await _matchRepository.UnDeleteMatch(matchId);
+            var seasons = await _seasonLogic.GetSeasons();
+            if (updateCount > 0)
             {
                 foreach (Season season in seasons)
                 {
