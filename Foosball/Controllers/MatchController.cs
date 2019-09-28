@@ -101,13 +101,11 @@ namespace Foosball.Controllers
             }
             
             var seasons = await _seasonLogic.GetSeasons();
-            var now = DateTime.Now;
-            if (seasons.All(x => x.StartDate <= now && x.EndDate >= now))
+            var currentSeason = HelperMethods.GetCurrentSeason(seasons);
+            if (currentSeason == null)
             {
                 return BadRequest(); //"No active seaons"
             }
-
-            var currentSeason = seasons.Single(x => x.StartDate <= now && (x.EndDate >= now || x.EndDate == null));
 
             var isEdit = saveMatchesRequest.Matches.Any(x => x.Id != Guid.Empty);
             var fromPreviousSeason = saveMatchesRequest.Matches.Any(x => x.TimeStampUtc < currentSeason.StartDate);
@@ -150,8 +148,7 @@ namespace Foosball.Controllers
             {
                 if (fromPreviousSeason)
                 {
-                    var season = seasons.Single(x =>
-                        x.StartDate <= matches.First().TimeStampUtc && x.EndDate >= matches.First().TimeStampUtc);
+                    var season = HelperMethods.GetSeasonOfDate(seasons, matches.First().TimeStampUtc);
                     await _leaderboardService.RecalculateLeaderboard(season.Name);
                 }
                 else

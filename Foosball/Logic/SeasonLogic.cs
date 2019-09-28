@@ -21,21 +21,19 @@ namespace Foosball.Logic
             var seasons = await _seasonRepository.GetSeasons();
             var newSeasonNumber = seasons.Count + 1;
 
-            var activeSeason = seasons.SingleOrDefault(x => x.EndDate == null);
+            var currentSeason = HelperMethods.GetCurrentSeason(seasons);
             
-            if (activeSeason != null)
+            if (currentSeason != null)
             {
-                if (activeSeason.StartDate.Date.AddDays(-1).Date == DateTime.UtcNow.Date)
+                if (currentSeason.StartDate.Date.AddDays(-1).Date == DateTime.UtcNow.Date)
                 {
                     throw new Exception("Cant start new season yet");
                 }
-
-                await _seasonRepository.EndSeason(activeSeason);
             }
 
             var newSeason = new Season
             {
-                StartDate = activeSeason != null ? DateTime.UtcNow.Date.AddDays(1) : DateTime.UtcNow.Date,
+                StartDate = currentSeason != null ? DateTime.UtcNow.Date.AddDays(1) : DateTime.UtcNow.Date,
                 Name = $"Season {newSeasonNumber}"
             };
 
@@ -49,11 +47,16 @@ namespace Foosball.Logic
             return await _seasonRepository.GetSeasons();
         }
 
+        public async Task<List<Season>> GetStartedSeasons()
+        {
+            return await _seasonRepository.GetStartedSeasons();
+        }
+
         public async Task<Season> GetActiveSeason()
         {
-            var existingSeasons = await _seasonRepository.GetSeasons();
+            var seasons = await _seasonRepository.GetSeasons();
 
-            return existingSeasons.SingleOrDefault(x => x.EndDate == null);
+            return HelperMethods.GetCurrentSeason(seasons);
         }
     }
 }

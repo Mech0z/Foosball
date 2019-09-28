@@ -44,14 +44,9 @@ namespace Foosball.Logic
             return leaderboardView;
         }
 
-        public LeaderboardView GetActiveLeaderboard()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public async Task<List<LeaderboardView>> GetLatestLeaderboardViews()
         {
-            var seasons = await _seasonLogic.GetSeasons();
+            var seasons = await _seasonLogic.GetStartedSeasons();
 
             var latestLeaderboardViews = await _leaderboardViewRepository.GetLeaderboardViews();
 

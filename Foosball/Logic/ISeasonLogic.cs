@@ -8,6 +8,7 @@ namespace Foosball.Logic
     {
         Task<string> StartNewSeason();
         Task<List<Season>> GetSeasons();
+        Task<List<Season>> GetStartedSeasons();
         Task<Season> GetActiveSeason();
     }
 }
