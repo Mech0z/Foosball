@@ -29,8 +29,8 @@ namespace Foosball.Controllers
             return Ok(seasonName);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetSeasons()
+        [HttpGet]
+        public async Task<IActionResult> GetSeasonsAsync()
         {
             var seasons = await _seasonLogic.GetSeasons();
             return Ok(seasons);
