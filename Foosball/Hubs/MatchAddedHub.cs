@@ -3,15 +3,12 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Foosball.Hubs
 {
-    public class MatchAddedHub : Hub
+    public class MatchAddedHub : Hub, IMatchAddedHub
     {
-        public async Task SendAsync2(string bla, string user, string message)
+        public async Task SendAsync(string bla, string user, string message)
         {
-            
             await Clients.All.SendAsync("ReceiveMessage", message, message);
         }
-
-
 
         public override Task OnConnectedAsync()
         {
@@ -19,20 +16,16 @@ namespace Foosball.Hubs
         }
     }
 
-    public interface IMatchAddedHub
+    public class ActivitySensorHub : Hub, IActivitySensorHub
     {
-        Task SendAsync(string title, string name, string message);
-    }
-    
-    public class MessageHub : Hub<ITypedHubClient>
-    {
-        public async Task SendMessage(string title, string user, string message)
+        public async Task SendAsync(string title, bool activity)
         {
-            await Clients.All.SendMessageToClient(title, user, message);
+            await Clients.All.SendAsync("ActivitySensorUpdate", activity);
         }
-    }
-    public interface ITypedHubClient
-    {
-        Task SendMessageToClient(string title, string name, string message);
+
+        public override Task OnConnectedAsync()
+        {
+            return base.OnConnectedAsync();
+        }
     }
 }

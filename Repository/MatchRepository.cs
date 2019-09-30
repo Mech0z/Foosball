@@ -18,7 +18,10 @@ namespace Repository
 
         public async Task<List<Match>> GetDeletedMatches()
         {
-            var matches = await Collection.AsQueryable().Where(x => x.EditedType != null && x.EditedType.Deleted).ToListAsync();
+            var matches = await Collection
+                .AsQueryable()
+                .Where(x => x.EditedType != null && x.EditedType.Deleted)
+                .ToListAsync();
             return matches;
         }
 

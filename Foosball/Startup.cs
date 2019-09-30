@@ -27,7 +27,7 @@ namespace Foosball
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); ;
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); ;
 
             services.AddScoped<ClaimRequirementFilter>();
 
@@ -43,6 +43,7 @@ namespace Foosball
             services.AddScoped<IMatchupResultRepository, MatchupResultRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserLoginInfoRepository, UserLoginInfoRepository>();
+            services.AddScoped<IActivityRepository, ActivityRepository>();
 
             //Logic
             services.AddScoped<IAchievementsService, AchievementsService>();
@@ -53,6 +54,10 @@ namespace Foosball
             services.AddScoped<IRating, EloRating>();
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEmailLogic, EmailLogic>();
+
+            //Hubs
+            services.AddSingleton<IActivitySensorHub, ActivitySensorHub>();
+            services.AddSingleton<IMatchAddedHub, MatchAddedHub>();
 
             services.AddSignalR();
 
@@ -82,6 +87,7 @@ namespace Foosball
             app.UseSignalR(routes =>
             {
                 routes.MapHub<MatchAddedHub>("/matchAddedHub");
+                routes.MapHub<ActivitySensorHub>("/activitySensorHub");
             });
 
             app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
