@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foosball.Logic;
+using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -22,9 +24,13 @@ namespace Foosball.Controllers
 
         [HttpPost]
         [ClaimRequirement("Permission", ClaimRoles.Admin)]
-        public IActionResult StartNewSeason()
+        public async Task<IActionResult> StartNewSeason(UpsertSeasonRequest request)
         {
-            var seasonName = _seasonLogic.StartNewSeason();
+            if (request.StartDate <= DateTime.Today)
+            {
+                throw new ArgumentException("Date must be in the future");
+            }
+            var seasonName = await _seasonLogic.StartNewSeason(request);
 
             return Ok(seasonName);
         }

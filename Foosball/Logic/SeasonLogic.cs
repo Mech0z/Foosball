@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Foosball.RequestResponse;
 using Models.Old;
 using Repository;
 
@@ -16,25 +17,26 @@ namespace Foosball.Logic
             _seasonRepository = seasonRepository;
         }
         
-        public async Task<string> StartNewSeason()
+        public async Task<string> StartNewSeason(UpsertSeasonRequest request)
         {
             var seasons = await _seasonRepository.GetSeasons();
-            var newSeasonNumber = seasons.Count + 1;
 
-            var currentSeason = HelperMethods.GetCurrentSeason(seasons);
-            
-            if (currentSeason != null)
+            var existingSeasonOnDate = seasons.SingleOrDefault(x => x.StartDate == request.StartDate);
+            if (existingSeasonOnDate != null)
             {
-                if (currentSeason.StartDate.Date.AddDays(-1).Date == DateTime.UtcNow.Date)
-                {
-                    throw new Exception("Cant start new season yet");
-                }
+                throw new ArgumentException("Already a season with this date");
+            }
+
+            var existingSameName = seasons.SingleOrDefault(x => x.Name == request.Name);
+            if (existingSameName != null)
+            {
+                throw new ArgumentException("Already a season with same name");
             }
 
             var newSeason = new Season
             {
-                StartDate = currentSeason != null ? DateTime.UtcNow.Date.AddDays(1) : DateTime.UtcNow.Date,
-                Name = $"Season {newSeasonNumber}"
+                StartDate = request.StartDate,
+                Name = request.Name
             };
 
             await _seasonRepository.CreateNewSeason(newSeason);
