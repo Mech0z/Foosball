@@ -31,7 +31,15 @@ namespace Foosball.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateActivityStatus(UpdateActivityStatusRequest request)
         {
-            await _activitySensorHub.SendAsync("SensorActivity", request.Activity);
+            try
+            {
+                await _activitySensorHub.SendAsync("SensorActivity", request.Activity);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
             _memoryCache.Set("ActivityStatus", request.Activity);
             _memoryCache.Set("ActivityDuration", request.Duration);
             return Ok();
