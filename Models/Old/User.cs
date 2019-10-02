@@ -15,8 +15,6 @@ namespace Models.Old
 
         public string GravatarEmail { get; set; }
 
-        public string Password { get; set; }
-
         public List<string> Roles { get; set; }
     }
 }

@@ -22,7 +22,6 @@ namespace Repository
 
             foreach (User user in users)
             {
-                user.Password = "";
                 user.Roles = null;
             }
 
@@ -44,19 +43,6 @@ namespace Repository
             };
 
             await Collection.InsertOneAsync(newUser);
-
-            return true;
-        }
-
-        public async Task<bool> ChangePassword(string email, string newPassword)
-        {
-            var query = Collection.AsQueryable();
-            var user = await query.SingleAsync(x => x.Email == email);
-
-            user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword, BCrypt.Net.BCrypt.GenerateSalt());
-
-            Collection.ReplaceOne(item => item.Id == user.Id, user,
-                            new UpdateOptions { IsUpsert = true });
 
             return true;
         }
