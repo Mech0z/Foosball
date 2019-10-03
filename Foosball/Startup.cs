@@ -27,7 +27,7 @@ namespace Foosball
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); ;
+            
 
             services.AddScoped<ClaimRequirementFilter>();
 
@@ -59,14 +59,18 @@ namespace Foosball
             services.AddSingleton<IActivitySensorHub, ActivitySensorHub>();
             services.AddSingleton<IMatchAddedHub, MatchAddedHub>();
 
-            services.AddSignalR();
-
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .WithOrigins("http://localhost:4200", "https://foosball.azurewebsites.net/", "http://localhost:5000/", "http://localhost:4200/");
             }));
+
+            services.AddSignalR();
+
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,14 +87,13 @@ namespace Foosball
             }
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-
+            app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
             {
                 routes.MapHub<MatchAddedHub>("/matchAddedHub");
                 routes.MapHub<ActivitySensorHub>("/activitySensorHub");
             });
 
-            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
