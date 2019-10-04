@@ -18,7 +18,7 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    [EnableCors("MyPolicy")]
+    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class MatchController : Controller
     {
