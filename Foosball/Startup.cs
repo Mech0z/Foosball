@@ -61,7 +61,8 @@ namespace Foosball
 
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
-                builder.AllowAnyOrigin()
+                builder
+                    .AllowCredentials()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .WithOrigins("http://localhost:4200", "https://foosball.azurewebsites.net/", "http://localhost:5000/", "http://localhost:4200/");
@@ -91,7 +92,7 @@ namespace Foosball
             app.UseSignalR(routes =>
             {
                 routes.MapHub<MatchAddedHub>("/matchAddedHub");
-                routes.MapHub<ActivitySensorHub>("/activitySensorHub");
+                routes.MapHub<MessageHub>("/activitySensorHub");
             });
 
             app.UseMvc();
