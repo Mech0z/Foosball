@@ -10,7 +10,7 @@ namespace Foosball.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ClaimRequirement("Permission", ClaimRoles.Admin)]
-    [EnableCors("CorsPolicy")]
+    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class AdministrationController : Controller
     {
