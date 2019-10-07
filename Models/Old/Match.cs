@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -8,6 +9,19 @@ namespace Models.Old
     [BsonIgnoreExtraElements]
     public class Match
     {
+        public Match(DateTime timeStampUtc,
+            List<string> playerList,
+            MatchResult matchResult,
+            int points,
+            string submittedBy)
+        {
+            TimeStampUtc = timeStampUtc;
+            PlayerList = playerList;
+            MatchResult = matchResult;
+            Points = points;
+            SubmittedBy = submittedBy;
+        }
+
         public Guid Id { get; set; }
 
         public DateTime TimeStampUtc { get; set; }
@@ -21,39 +35,17 @@ namespace Models.Old
         /// </summary>
         public List<string> PlayerList { get; set; }
         
-        /// <summary>
-        /// True means first player in list is defence and second is offence
-        /// </summary>
-        public bool StaticFormationTeam1 { get; set; }
-        public bool StaticFormationTeam2 { get; set; }
-
-        public int Team1HashCode
-        {
-            get
-            {
-                //TODO dont seem optimal to create a list every time
-                var list = new List<string> { PlayerList[0], PlayerList[1] };
-                return list.OrderBy(x => x).GetHashCode();
-            }
-        }
-
-        public int Team2HashCode
-        {
-            get
-            {
-                var list = new List<string> { PlayerList[2], PlayerList[3] };
-                return list.OrderBy(x => x).GetHashCode();
-            }
-        }
+        [NotMapped]
+        public int Team1HashCode => PlayerList.Take(2).OrderBy(x => x).GetHashCode();
+        [NotMapped]
+        public int Team2HashCode => PlayerList.TakeLast(2).OrderBy(x => x).GetHashCode();
 
         public MatchResult MatchResult { get; set; }
 
-        public int? Points { get; set; }
-
-        public string SeasonName { get; set; }
+        public int Points { get; set; }
 
         public string SubmittedBy { get; set; }
 
-        public EditedType EditedType { get; set; }
+        public EditedType? EditedType { get; set; }
     }
 }

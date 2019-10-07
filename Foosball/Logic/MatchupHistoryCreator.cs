@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Models;
 using Models.Old;
 using Repository;
 
@@ -22,12 +23,14 @@ namespace Foosball.Logic
             _leaderboardViewRepository = leaderboardViewRepository;
         }
 
-        public async Task<List<PartnerPercentResult>> GetPartnerWinPercent(string email, string season)
+        public async Task<List<PartnerPercentResult>> GetPartnerWinPercent(List<Season> seasons, string email,
+            Season season)
         {
             var leaderboard = await _leaderboardViewRepository.GetLeaderboardView(season);
             double? normalWinRate = null;
             if (leaderboard != null)
             {
+                // ReSharper disable once RedundantCast
                 normalWinRate = leaderboard.Entries.Where(e => e.UserName == email).Select(e => Math.Round((((double)e.Wins / (double)e.NumberOfGames) * 100),2)).FirstOrDefault();
             }
 
@@ -46,7 +49,7 @@ namespace Foosball.Logic
                 }
             }
 
-            var matches = await _matchRepository.GetMatches(season);
+            var matches = await _matchRepository.GetMatches(season.StartDate, HelperMethods.GetNextSeason(seasons, season)?.StartDate);
 
             foreach (Match match in matches)
             {

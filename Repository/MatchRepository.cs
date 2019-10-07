@@ -25,14 +25,25 @@ namespace Repository
             return matches;
         }
 
-        public async Task<List<Match>> GetMatches(string season)
+        public async Task<List<Match>> GetMatches(DateTime? startDate, DateTime? dateOfNextSeasonStart)
         {
-            var result = string.IsNullOrWhiteSpace(season)
-                ? Collection.AsQueryable()
-                : Collection.AsQueryable()
-                    .Where(x => x.SeasonName == season && (x.EditedType == null || x.EditedType.Deleted == false));
+            if (startDate == null && dateOfNextSeasonStart == null)
+            {
+                var result = Collection.AsQueryable();
+                return await result.ToListAsync();
+            }
+            else
+            {
+                startDate ??= DateTime.MinValue;
+                dateOfNextSeasonStart ??= DateTime.MaxValue;
 
-            return await result.ToListAsync();
+                var result = Collection.AsQueryable()
+                    .Where(x => x.TimeStampUtc >= startDate &&
+                                x.TimeStampUtc < dateOfNextSeasonStart &&
+                                (x.EditedType == null || x.EditedType.Deleted == false));
+
+                return await result.ToListAsync();
+            }
         }
 
         public async Task<List<string>> GetUniqueEmails()

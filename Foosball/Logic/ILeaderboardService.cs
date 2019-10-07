@@ -6,7 +6,7 @@ namespace Foosball.Logic
 {
     public interface ILeaderboardService : ILogic
     {
-        Task<LeaderboardView> RecalculateLeaderboard(string season);
+        Task<LeaderboardView> RecalculateLeaderboard(Season season);
         Task<List<LeaderboardView>> GetLatestLeaderboardViews();
         bool AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match);
     }

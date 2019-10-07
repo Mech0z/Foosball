@@ -5,10 +5,11 @@ namespace Models.Old
 {
     public class LeaderboardView
     {
-        public LeaderboardView()
+        public LeaderboardView(string seasonName)
         {
             Entries = new List<LeaderboardViewEntry>();
             Timestamp = DateTime.UtcNow;
+            SeasonName = seasonName;
         }
         
         public Guid Id { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Models;
 using Models.Old;
 using Repository;
 
@@ -18,16 +19,17 @@ namespace Foosball.Logic
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly IMatchRepository _matchRepository;
         
-        public async Task<AchievementsView> GetAchievementsView(string season)
+        public async Task<AchievementsView> GetAchievementsView(List<Season> seasons, Season season)
         {
             var leaderboardView = await _leaderboardViewRepository.GetLeaderboardView(season);
-            var matches = (await _matchRepository.GetMatches(season)).OrderBy(m=>m.TimeStampUtc).ToList();
+            var matches =
+                (await _matchRepository.GetMatches(season.StartDate,
+                    HelperMethods.GetNextSeason(seasons, season)?.StartDate))
+                .OrderBy(m => m.TimeStampUtc).ToList();
 
             GetStreak(matches, leaderboardView.Entries, true, out var winStreak, out var playerWin);
 
-            int lossStreak;
-
-            GetStreak(matches, leaderboardView.Entries, false, out lossStreak, out var playerLoss);
+            GetStreak(matches, leaderboardView.Entries, false, out var lossStreak, out var playerLoss);
 
             var mostGames = leaderboardView.Entries.OrderByDescending(e => e.NumberOfGames).First();
             var mostWins = leaderboardView.Entries.OrderByDescending(e => e.Wins).First();
@@ -163,6 +165,6 @@ namespace Foosball.Logic
 
     public interface IAchievementsService : ILogic
     {
-        Task<AchievementsView> GetAchievementsView(string season);
+        Task<AchievementsView> GetAchievementsView(List<Season> seasons, Season season);
     }
 }

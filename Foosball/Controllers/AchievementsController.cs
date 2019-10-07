@@ -25,8 +25,8 @@ namespace Foosball.Controllers
         public async Task<AchievementsView> Index()
         {
             var activeSeason = await _seasonLogic.GetActiveSeason();
-
-            var ach = await _achievementsService.GetAchievementsView(activeSeason.Name);
+            var seasons = await _seasonLogic.GetSeasons();
+            var ach = await _achievementsService.GetAchievementsView(seasons, activeSeason);
 
             return ach;
         }

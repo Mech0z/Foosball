@@ -11,7 +11,7 @@ namespace Repository
         Task Upsert(Match match);
         Task<long> UnDeleteMatch(Guid matchId);
         Task<List<Match>> GetDeletedMatches();
-        Task<List<Match>> GetMatches(string season);
+        Task<List<Match>> GetMatches(DateTime? startDate, DateTime? dateOfNextSeasonStart);
         Task<Match> GetByTimeStamp(DateTime dateTime);
         Task<List<Match>> GetRecentMatches(int numberOfMatches);
         Task<List<Match>> GetPlayerMatches(string email);

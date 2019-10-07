@@ -6,7 +6,7 @@ namespace Foosball.Logic
 {
     public interface IMatchupHistoryCreator : ILogic
     {
-        Task<List<PartnerPercentResult>> GetPartnerWinPercent(string email, string season);
+        Task<List<PartnerPercentResult>> GetPartnerWinPercent(List<Season> seasons, string email, Season season);
         Task AddMatch(Match match);
         void RecalculateMatchupHistory();
     }

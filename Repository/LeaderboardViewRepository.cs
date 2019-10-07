@@ -17,10 +17,10 @@ namespace Repository
 
         }
 
-        public async Task<LeaderboardView> GetLeaderboardView(string seasonName)
+        public async Task<LeaderboardView> GetLeaderboardView(Season season)
         {
             var result = await Collection.AsQueryable()
-                .Where(x => x.SeasonName == seasonName)
+                .Where(x => x.SeasonName == season.Name)
                 .OrderBy(x => x.Timestamp)
                 .ToListAsync();
 

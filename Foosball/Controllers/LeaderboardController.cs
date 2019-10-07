@@ -38,7 +38,7 @@ namespace Foosball.Controllers
             var seasons = await _seasonLogic.GetSeasons();
             foreach (var season in seasons)
             {
-                await _leaderboardService.RecalculateLeaderboard(season.Name);
+                await _leaderboardService.RecalculateLeaderboard(season);
             }
 
             return Ok();
@@ -54,7 +54,7 @@ namespace Foosball.Controllers
 
             if (season != null)
             {
-                await _leaderboardService.RecalculateLeaderboard(season.Name);
+                await _leaderboardService.RecalculateLeaderboard(season);
                 return Ok();
             }
 

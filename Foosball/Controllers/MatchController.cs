@@ -58,7 +58,7 @@ namespace Foosball.Controllers
         {
             try
             {
-                var matches = await _matchRepository.GetMatches(null);
+                var matches = await _matchRepository.GetMatches(null, null);
 
                 return matches;
             }
@@ -125,8 +125,6 @@ namespace Foosball.Controllers
                     match.TimeStampUtc = DateTime.UtcNow;
                 }
 
-                match.SeasonName = currentSeason.Name;
-
                 var leaderboards = await _leaderboardService.GetLatestLeaderboardViews();
 
                 var activeLeaderboard = leaderboards.SingleOrDefault(x => x.SeasonName == currentSeason.Name);
@@ -149,11 +147,11 @@ namespace Foosball.Controllers
                 if (fromPreviousSeason)
                 {
                     var season = HelperMethods.GetSeasonOfDate(seasons, matches.First().TimeStampUtc);
-                    await _leaderboardService.RecalculateLeaderboard(season.Name);
+                    await _leaderboardService.RecalculateLeaderboard(season);
                 }
                 else
                 {
-                    await _leaderboardService.RecalculateLeaderboard(currentSeason.Name);
+                    await _leaderboardService.RecalculateLeaderboard(currentSeason);
                 }
             }
 
@@ -250,7 +248,7 @@ namespace Foosball.Controllers
             {
                 foreach (Season season in seasons)
                 {
-                    await _leaderboardService.RecalculateLeaderboard(season.Name);
+                    await _leaderboardService.RecalculateLeaderboard(season);
                 }
                 return Ok();
             }
@@ -268,7 +266,7 @@ namespace Foosball.Controllers
             {
                 foreach (Season season in seasons)
                 {
-                    await _leaderboardService.RecalculateLeaderboard(season.Name);
+                    await _leaderboardService.RecalculateLeaderboard(season);
                 }
                 return Ok();
             }

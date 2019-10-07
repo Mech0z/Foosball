@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Models;
 using Models.Old;
 using Repository;
 
@@ -21,13 +22,17 @@ namespace Foosball.Logic
             _seasonLogic = seasonLogic;
         }
 
-        public async Task<LeaderboardView> RecalculateLeaderboard(string season)
+        public async Task<LeaderboardView> RecalculateLeaderboard(Season season)
         {
-            var matches = (await _matchRepository.GetMatches(season)).OrderBy(x => x.TimeStampUtc);
+            var seasons = await _seasonLogic.GetSeasons();
+            var matches =
+                (await _matchRepository.GetMatches(season.StartDate,
+                    HelperMethods.GetNextSeason(seasons, season)?.StartDate))
+                .OrderBy(x => x.TimeStampUtc);
 
             var existingLeaderboard = await _leaderboardViewRepository.GetLeaderboardView(season);
             
-            var leaderboardView = existingLeaderboard ?? new LeaderboardView {SeasonName = season};
+            var leaderboardView = existingLeaderboard ?? new LeaderboardView(season.Name);
             leaderboardView.Entries = new List<LeaderboardViewEntry>(); //Clear old matches if existing leaderboard exists
 
             foreach (var match in matches)
@@ -56,7 +61,7 @@ namespace Foosball.Logic
 
                 if (existingLeaderboard == false)
                 {
-                    var leaderboardView = await RecalculateLeaderboard(season.Name);
+                    var leaderboardView = await RecalculateLeaderboard(season);
                     if (leaderboardView.Entries != null && leaderboardView.Entries.Any())
                     {
                         latestLeaderboardViews.Add(leaderboardView);
