@@ -11,13 +11,11 @@ namespace Foosball.Logic
     {
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly IMatchRepository _matchRepository;
-        private readonly ISeasonRepository _seasonRepository;
 
-        public UserLogic(ILeaderboardViewRepository leaderboardViewRepository, IMatchRepository matchRepository, ISeasonRepository seasonRepository)
+        public UserLogic(ILeaderboardViewRepository leaderboardViewRepository, IMatchRepository matchRepository)
         {
             _leaderboardViewRepository = leaderboardViewRepository;
             _matchRepository = matchRepository;
-            _seasonRepository = seasonRepository;
         }
 
         public async Task<EggStats> GetEggStats(string email)
@@ -60,14 +58,8 @@ namespace Foosball.Logic
         {
             var result = new List<PlayerLeaderboardEntry>();
             var leaderboards = await _leaderboardViewRepository.GetLeaderboardViews();
-            var seasons = await _seasonRepository.GetSeasons();
 
-            foreach (var leaderboardView in leaderboards)
-            {
-                leaderboardView.StartDate = seasons.Single(x => x.Name == leaderboardView.SeasonName).StartDate;
-            }
-
-            foreach (var leaderboard in leaderboards.OrderBy(x => x.StartDate))
+            foreach (var leaderboard in leaderboards)
             {
                 var leaderboardEntries = leaderboard.Entries.OrderByDescending(x => x.EloRating).ToList();
                 var playerEntry = leaderboardEntries.SingleOrDefault(x => x.UserName == email);

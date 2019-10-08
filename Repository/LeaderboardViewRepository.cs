@@ -21,13 +21,8 @@ namespace Repository
         {
             var result = await Collection.AsQueryable()
                 .Where(x => x.SeasonName == season.Name)
-                .OrderBy(x => x.Timestamp)
                 .ToListAsync();
-
-            //query.OrderBy(x => x.Timestamp);
-            //query.Where(x => x.SeasonName == seasonName);
-            //var result = await query.ToListAsync();
-
+            
             return result.FirstOrDefault();
         }
 
