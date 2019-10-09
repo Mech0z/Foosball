@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Models;
 using Repository;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Foosball
 {
@@ -27,13 +28,11 @@ namespace Foosball
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
 
-            
-
             services.AddScoped<ClaimRequirementFilter>();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo{Title = "Foosball API", Version = "v1" });
             });
 
             //Repository
@@ -71,11 +70,11 @@ namespace Foosball
             services.AddSignalR();
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -88,18 +87,20 @@ namespace Foosball
             }
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-            app.UseCors("CorsPolicy");
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<MatchAddedHub>("/matchAddedHub");
-                routes.MapHub<MessageHub>("/activitySensorHub");
-            });
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseCors("CorsPolicy");
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<MatchAddedHub>("/matchAddedHub");
+                endpoints.MapHub<MessageHub>("/activitySensorHub");
             });
         }
     }
