@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -11,7 +9,6 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class SeasonsAdministrationController : Controller
     {

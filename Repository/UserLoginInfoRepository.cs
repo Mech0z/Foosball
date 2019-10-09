@@ -78,12 +78,7 @@ namespace Repository
             }
             else
             {
-                existingUserLogin.Tokens.Add(new LoginToken
-                {
-                    Token = tokenGuid.ToString(),
-                    DeviceName = deviceName,
-                    Expirytime = expirytime,
-                });
+                existingUserLogin.Tokens.Add(new LoginToken(tokenGuid.ToString(), expirytime, deviceName));
             }
 
             await Collection.ReplaceOneAsync(i => i.Id == existingUserLogin.Id, existingUserLogin);

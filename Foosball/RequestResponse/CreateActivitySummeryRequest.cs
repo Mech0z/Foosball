@@ -4,6 +4,6 @@ namespace Foosball.RequestResponse
 {
     public class CreateActivitySummeryRequest
     {
-        public List<ActivitySummeryEntry> ActivitySummeryEntries { get; set; }
+        public List<ActivitySummeryEntry>? ActivitySummeryEntries { get; set; }
     }
 }

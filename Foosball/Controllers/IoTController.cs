@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Hubs;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
@@ -14,13 +13,16 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class IoTController : Controller
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IActivityRepository _activityRepository;
-        private IHubContext<MessageHub, ITypedHubClient> _hubContext;
+        private readonly IHubContext<MessageHub, ITypedHubClient> _hubContext;
+
+        private string _activitystatus = "ActivityStatus";
+        private string _activityduration = "ActivityDuration";
+        private string _lastactivitystatusset = "LastActivityStatusSet";
 
         public IoTController(IMemoryCache memoryCache,
             IActivityRepository activityRepository,
@@ -34,38 +36,48 @@ namespace Foosball.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateActivityStatus(UpdateActivityStatusRequest request)
         {
-            string retMessage;
+            _memoryCache.TryGetValue(_activitystatus, out bool status);
+            if (request.Activity != status)
+            {
+                _memoryCache.Set(_lastactivitystatusset, DateTime.Now);
+            }
+
+            _memoryCache.Set(_activitystatus, request.Activity);
+            _memoryCache.Set(_activityduration, request.Duration);
 
             try
             {
-                await _hubContext.Clients.All.SendMessageToClient("TestTitle", "activity", "sdfdsfdsf");
-                retMessage = "Success";
+                _memoryCache.TryGetValue(_lastactivitystatusset, out DateTime? lastActivityStatusSet);
+                await _hubContext.Clients.All.ActivityUpdated(request.Activity, request.Duration, lastActivityStatusSet);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                retMessage = e.ToString();
+
             }
 
-            _memoryCache.Set("ActivityStatus", request.Activity);
-            _memoryCache.Set("ActivityDuration", request.Duration);
             return Ok();
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetStatus()
+        public ActionResult GetStatus()
         {
-            _memoryCache.TryGetValue("ActivityStatus", out bool status);
-            _memoryCache.TryGetValue("ActivityDuration", out int duration);
+            _memoryCache.TryGetValue(_activitystatus, out bool status);
+            _memoryCache.TryGetValue(_activityduration, out int duration);
+            _memoryCache.TryGetValue(_lastactivitystatusset, out DateTime lastActivityStatusSet);
+
             return Ok(new GetStatusResponse
             {
                 Activity = status,
-                Duration = duration
+                Duration = duration,
+                LastActivityStatusSet = lastActivityStatusSet
             });
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateActivity(CreateActivitySummeryRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
             var date = DateTime.UtcNow.Date;
             await _activityRepository.UpsertActivity(new Activity
             {

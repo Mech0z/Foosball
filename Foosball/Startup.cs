@@ -55,10 +55,6 @@ namespace Foosball
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEmailLogic, EmailLogic>();
 
-            //Hubs
-            services.AddSingleton<IActivitySensorHub, ActivitySensorHub>();
-            services.AddSingleton<IMatchAddedHub, MatchAddedHub>();
-
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder
@@ -91,8 +87,7 @@ namespace Foosball
             app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
             {
-                routes.MapHub<MatchAddedHub>("/matchAddedHub");
-                routes.MapHub<MessageHub>("/activitySensorHub");
+                routes.MapHub<MessageHub>("/foosballHub");
             });
 
             app.UseMvc();
