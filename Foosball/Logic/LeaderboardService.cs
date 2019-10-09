@@ -74,7 +74,11 @@ namespace Foosball.Logic
                 leaderboardView.Entries = leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList();
             }
 
-            return latestLeaderboardViews;
+            List<LeaderboardView> startDateSorted = latestLeaderboardViews
+                .Select(x => new {Lbw = x, Season = seasons.Single(s => s.Name == x.SeasonName)})
+                .OrderByDescending(x => x.Season.StartDate).Select(x => x.Lbw).ToList();
+
+            return startDateSorted;
         }
 
         public bool AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match)
