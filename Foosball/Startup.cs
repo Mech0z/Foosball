@@ -61,7 +61,7 @@ namespace Foosball
                     .AllowCredentials()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithOrigins("http://localhost:4200", "https://foosball.azurewebsites.net/", "http://localhost:5000/", "http://localhost:4200/");
+                    .WithOrigins("http://localhost:4200","http://localhost:5000", "https://foosball.azurewebsites.net", "https://foosballapi.azurewebsites.net");
             }));
 
             services.AddSignalR();
