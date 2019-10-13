@@ -1,4 +1,5 @@
-﻿using Foosball.Hubs;
+﻿using System.Collections.Generic;
+using Foosball.Hubs;
 using Foosball.Logic;
 using Foosball.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -26,9 +27,7 @@ namespace Foosball
         {
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
-
             
-
             services.AddScoped<ClaimRequirementFilter>();
 
             services.AddSwaggerGen(c =>
@@ -55,13 +54,17 @@ namespace Foosball
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEmailLogic, EmailLogic>();
 
+            services.Configure<SecuritySettings>(Configuration.GetSection("SecuritySettings"));
+            var securitySettings = new SecuritySettings();
+            Configuration.GetSection("SecuritySettings").Bind(securitySettings);
+
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder
                     .AllowCredentials()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithOrigins("http://localhost:4200","http://localhost:5000", "https://foosball.azurewebsites.net", "https://foosballapi.azurewebsites.net");
+                    .WithOrigins(securitySettings.CorsUrls.ToArray());
             }));
 
             services.AddSignalR();
