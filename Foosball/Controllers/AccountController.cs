@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.Middleware;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -12,7 +11,6 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class AccountController : Controller
     {
@@ -26,6 +24,11 @@ namespace Foosball.Controllers
         [HttpPost]
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
+            if (loginRequest == null) throw new ArgumentNullException(nameof(loginRequest));
+            if (loginRequest.Email == null) throw new ArgumentNullException(nameof(loginRequest.Email));
+            if (loginRequest.DeviceName == null) throw new ArgumentNullException(nameof(loginRequest.DeviceName));
+            if (loginRequest.Password == null) throw new ArgumentNullException(nameof(loginRequest.Password));
+
             var result = await _accountLogic.Login(loginRequest.Email,
                 loginRequest.Password,
                 loginRequest.RememberMe,
@@ -66,7 +69,7 @@ namespace Foosball.Controllers
         {
             var loginSession = HttpContext.GetLoginSession();
 
-            if (!IsValidEmail(request.NewEmail))
+            if (request.NewEmail == null || !IsValidEmail(request.NewEmail))
             {
                 return BadRequest();
             }

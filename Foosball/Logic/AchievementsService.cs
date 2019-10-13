@@ -100,7 +100,7 @@ namespace Foosball.Logic
             return view;
         }
 
-        private void GetStreak(List<Match> matches, IEnumerable<LeaderboardViewEntry> entries, bool winStreak, out int streak, out LeaderboardViewEntry player)
+        private void GetStreak(List<Match> matches, IEnumerable<LeaderboardViewEntry> entries, bool winStreak, out int streak, out LeaderboardViewEntry? player)
         {
             player = null;
             int currentStreak = 0;

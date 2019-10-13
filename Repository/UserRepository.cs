@@ -36,11 +36,7 @@ namespace Repository
             if (existingResult != null)
                 return false;
 
-            var newUser = new User
-            {
-                Email = email.ToLowerInvariant(),
-                Username = username
-            };
+            var newUser = new User(email.ToLowerInvariant(), username);
 
             await Collection.InsertOneAsync(newUser);
 

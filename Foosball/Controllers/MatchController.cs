@@ -7,7 +7,6 @@ using Foosball.Hubs;
 using Foosball.Logic;
 using Foosball.Middleware;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Models;
@@ -18,30 +17,29 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class MatchController : Controller
     {
         private readonly ILeaderboardService _leaderboardService;
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly ISeasonLogic _seasonLogic;
-        private readonly IHubContext<MatchAddedHub> _messageHubContext;
         private readonly IMatchRepository _matchRepository;
         private readonly IMatchupResultRepository _matchupResultRepository;
+        private readonly IHubContext<MessageHub, ITypedHubClient> _hubContext;
 
         public MatchController(IMatchRepository matchRepository,
             IMatchupResultRepository matchupResultRepository,
             ILeaderboardService leaderboardService,
             ILeaderboardViewRepository leaderboardViewRepository,
             ISeasonLogic seasonLogic,
-            IHubContext<MatchAddedHub> messageHubContext)
+            IHubContext<MessageHub, ITypedHubClient> hubContext)
         {
             _matchRepository = matchRepository;
             _matchupResultRepository = matchupResultRepository;
             _leaderboardService = leaderboardService;
             _leaderboardViewRepository = leaderboardViewRepository;
             _seasonLogic = seasonLogic;
-            _messageHubContext = messageHubContext;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -80,10 +78,9 @@ namespace Foosball.Controllers
         [ClaimRequirement("Permission", ClaimRoles.Player)]
         public async Task<IActionResult> SaveMatch(SaveMatchesRequest saveMatchesRequest)
         {
-            if (saveMatchesRequest == null)
-            {
-                return BadRequest();
-            }
+            if (saveMatchesRequest == null) throw new ArgumentNullException(nameof(saveMatchesRequest));
+            if (saveMatchesRequest.Email == null) throw new ArgumentNullException(nameof(saveMatchesRequest.Email));
+            if (saveMatchesRequest.Matches == null) throw new ArgumentNullException(nameof(saveMatchesRequest.Matches));
 
             var hasAdminClaim = HttpContext.User.HasClaim(x => x.Type == "Role" && x.Value == ClaimRoles.Admin.ToString());
 
@@ -155,7 +152,7 @@ namespace Foosball.Controllers
                 }
             }
 
-            await _messageHubContext.Clients.All.SendAsync("matchAdded", "test", "test");
+            await _hubContext.Clients.All.MatchAdded();
             return Ok();
         }
 

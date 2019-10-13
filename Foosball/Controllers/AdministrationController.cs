@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -10,7 +10,6 @@ namespace Foosball.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ClaimRequirement("Permission", ClaimRoles.Admin)]
-    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class AdministrationController : Controller
     {
@@ -30,12 +29,20 @@ namespace Foosball.Controllers
         [HttpPost]
         public async Task<bool> ChangeUserPassword(ChangeUserPasswordRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.NewPassword == null) throw new ArgumentNullException(nameof(request.NewPassword));
+            if (request.UserEmail == null) throw new ArgumentNullException(nameof(request.UserEmail));
+
             return await _accountLogic.ChangeUserPassword(request.UserEmail, request.NewPassword);
         }
 
         [HttpPost]
         public async Task<bool> ChangeUserRoles(ChangeUserRolesRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.Roles == null) throw new ArgumentNullException(nameof(request.Roles));
+            if (request.UserEmail == null) throw new ArgumentNullException(nameof(request.UserEmail));
+
             return await _accountLogic.ChangeUserRoles(request.UserEmail, request.Roles);
         }
     }

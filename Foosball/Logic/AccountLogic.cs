@@ -28,7 +28,7 @@ namespace Foosball.Logic
             return await _userLoginInfoRepository.Login(email, password, rememberMe, deviceName);
         }
 
-        public async Task<LoginResult> ValidateLogin(LoginSession loginSession, string role = null)
+        public async Task<LoginResult> ValidateLogin(LoginSession loginSession, string? role = null)
         {
             var loginResult =
                 await _userLoginInfoRepository.VerifyLogin(loginSession.Email, loginSession.Token, loginSession.DeviceName);
@@ -41,7 +41,7 @@ namespace Foosball.Logic
             return loginResult;
         }
 
-        public async Task<LoginResult> ValidateLogin(string email, string token, string deviceName, string role = null)
+        public async Task<LoginResult> ValidateLogin(string email, string token, string deviceName, string? role = null)
         {
             LoginResult loginResult =
                 await _userLoginInfoRepository.VerifyLogin(email, token, deviceName);
@@ -65,11 +65,8 @@ namespace Foosball.Logic
 
             foreach (var user in users)
             {
-                response.Users.Add(new UserMappingsResponseEntry
-                {
-                    Email = user.Email,
-                    Roles = userRoles.SingleOrDefault(x => x.Email == user.Email)?.Roles
-                });
+                response.Users.Add(new UserMappingsResponseEntry(user.Email,
+                    userRoles.SingleOrDefault(x => x.Email == user.Email)?.Roles));
             }
 
             return response;

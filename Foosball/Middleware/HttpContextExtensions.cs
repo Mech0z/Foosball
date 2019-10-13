@@ -8,12 +8,9 @@ namespace Foosball.Middleware
     {
         public static LoginSession GetLoginSession(this HttpContext context)
         {
-            var loginSession = new LoginSession
-            {
-                Token = context.User.Claims.Single(x => x.Type == "Token").Value,
-                Email = context.User.Claims.Single(x => x.Type == "Email").Value,
-                DeviceName = context.User.Claims.Single(x => x.Type == "DeviceName").Value
-            };
+            var loginSession = new LoginSession(context.User.Claims.Single(x => x.Type == "Token").Value,
+                context.User.Claims.Single(x => x.Type == "Email").Value,
+                context.User.Claims.Single(x => x.Type == "DeviceName").Value);
 
             return loginSession;
         }

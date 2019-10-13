@@ -54,17 +54,13 @@ namespace Foosball
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEmailLogic, EmailLogic>();
 
-            //Hubs
-            services.AddSingleton<IActivitySensorHub, ActivitySensorHub>();
-            services.AddSingleton<IMatchAddedHub, MatchAddedHub>();
-
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder
                     .AllowCredentials()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithOrigins("http://localhost:4200", "https://foosball.azurewebsites.net/", "http://localhost:5000/", "http://localhost:4200/");
+                    .WithOrigins("http://localhost:4200","http://localhost:5000", "https://foosball.azurewebsites.net", "https://foosballapi.azurewebsites.net");
             }));
 
             services.AddSignalR();
@@ -99,8 +95,7 @@ namespace Foosball
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MatchAddedHub>("/matchAddedHub");
-                endpoints.MapHub<MessageHub>("/activitySensorHub");
+                endpoints.MapHub<MatchAddedHub>("/foosballHub");
             });
         }
     }

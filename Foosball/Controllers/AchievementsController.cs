@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Foosball.Logic;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.Old;
 
@@ -8,7 +7,6 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class AchievementsController : Controller
     {

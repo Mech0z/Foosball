@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.Middleware;
 using Foosball.RequestResponse;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Old;
@@ -14,7 +14,6 @@ namespace Foosball.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
-    //[EnableCors("CorsPolicy")]
     [ApiController]
     public class PlayerController : Controller
     {
@@ -81,9 +80,12 @@ namespace Foosball.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody]CreateUserRequest request)
         {
-            var users = await _userRepository.GetUsersAsync();
-            
-            if (string.IsNullOrEmpty(request.Email) || !request.Email.Contains("@"))
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.Email == null) throw new ArgumentNullException(nameof(request.Email));
+            if (request.Password == null) throw new ArgumentNullException(nameof(request.Password));
+            if (request.Username == null) throw new ArgumentNullException(nameof(request.Username));
+
+            if (!request.Email.Contains("@"))
             {
                 return BadRequest("Invalid email");
             }
@@ -98,7 +100,9 @@ namespace Foosball.Controllers
                 return BadRequest("Username must be at least 6 characters long");
             }
 
-            if (users.Any(x => x.Email.ToLower() == request.Email.ToLower()))
+            var users = await _userRepository.GetUsersAsync();
+
+            if (users.Any(x => string.Equals(x.Email, request.Email, StringComparison.CurrentCultureIgnoreCase)))
             {
                 return BadRequest("Email already taken");
             }
@@ -115,6 +119,10 @@ namespace Foosball.Controllers
         [ClaimRequirement("Permission", ClaimRoles.Player)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.Email == null) throw new ArgumentNullException(nameof(request.Email));
+            if (request.NewPassword == null) throw new ArgumentNullException(nameof(request.NewPassword));
+
             var loginSession = HttpContext.GetLoginSession();
 
             if(request.Email != loginSession.Email)
