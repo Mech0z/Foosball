@@ -95,7 +95,8 @@ namespace Foosball
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MatchAddedHub>("/foosballHub");
+                endpoints.MapHub<MessageHub>("/foosballHub");
+                endpoints.MapControllers();
             });
         }
     }
