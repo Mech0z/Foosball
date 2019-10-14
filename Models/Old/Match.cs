@@ -9,6 +9,11 @@ namespace Models.Old
     [BsonIgnoreExtraElements]
     public class Match
     {
+        public Match()
+        {
+            PlayerList = new List<string>();
+        }
+
         public Match(DateTime timeStampUtc,
             List<string> playerList,
             MatchResult matchResult,
@@ -40,11 +45,11 @@ namespace Models.Old
         [NotMapped]
         public int Team2HashCode => PlayerList.TakeLast(2).OrderBy(x => x).GetHashCode();
 
-        public MatchResult MatchResult { get; set; }
+        public MatchResult? MatchResult { get; set; }
 
         public int Points { get; set; }
 
-        public string SubmittedBy { get; set; }
+        public string? SubmittedBy { get; set; }
 
         public EditedType? EditedType { get; set; }
     }
