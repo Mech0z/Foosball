@@ -3,9 +3,9 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.Middleware;
-using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.RequestResponses;
 
 namespace Foosball.Controllers
 {

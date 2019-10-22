@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Foosball.RequestResponse;
 using Models;
 using Models.Old;
+using Models.RequestResponses;
 using Repository;
 
 namespace Foosball.Logic

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Foosball.Middleware;
-using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.Old;
+using Models.RequestResponses;
 using Repository;
 
 namespace Foosball.Controllers

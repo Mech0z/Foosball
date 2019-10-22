@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Foosball.RequestResponse;
 using Models.Old;
+using Models.RequestResponses;
 
 namespace Foosball.Logic
 {

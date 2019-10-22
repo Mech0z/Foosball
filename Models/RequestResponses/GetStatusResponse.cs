@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Foosball.RequestResponse
+namespace Models.RequestResponses
 {
     public class GetStatusResponse
     {

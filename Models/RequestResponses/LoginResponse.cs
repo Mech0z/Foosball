@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Foosball.RequestResponse
+namespace Models.RequestResponses
 {
     public class LoginResponse
     {

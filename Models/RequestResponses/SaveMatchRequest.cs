@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Models.Old;
 
-namespace Foosball.RequestResponse
+namespace Models.RequestResponses
 {
     public class SaveMatchesRequest
     {

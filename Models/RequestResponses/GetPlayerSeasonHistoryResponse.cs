@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Models.Old;
 
-namespace Foosball.RequestResponse
+namespace Models.RequestResponses
 {
     public class GetPlayerSeasonHistoryResponse
     {

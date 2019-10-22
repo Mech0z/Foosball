@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Foosball.Logic;
-using Foosball.RequestResponse;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.RequestResponses;
 
 namespace Foosball.Controllers
 {

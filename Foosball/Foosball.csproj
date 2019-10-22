@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="RequestResponse\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

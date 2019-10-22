@@ -1,4 +1,4 @@
-﻿namespace Foosball.RequestResponse
+﻿namespace Models.RequestResponses
 {
     public class UpdateActivityStatusRequest
     {
