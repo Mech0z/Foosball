@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Models.Old;
 using Models.RequestResponses;
@@ -13,7 +16,7 @@ namespace IntegrationsTests
     public class TestHelper
     {
         //TODO Move to app settings file
-        private const string Basestring = "https://foosballapi-integrationtest.azurewebsites.net/api/";
+        private const string Basestring = "http://localhost:5000/api";
 
         private readonly IMongoCollection<User> _usersCollection;
         private readonly IMongoCollection<Season> _seasonsCollection;
@@ -72,10 +75,15 @@ namespace IntegrationsTests
             _seasonsCollection.InsertOne(season);
         }
 
-        public void AddPlayerRole(string email)
+        public UserLoginInfo AddPlayerRole(string email)
         {
-            var userLoginInfo = new UserLoginInfo{Email = email, Roles = new List<string>{"Player"}};
+            var userLoginInfo = new UserLoginInfo {Email = email, Roles = new List<string> {"Player"}, HashedPassword = "12345", Tokens = new List<LoginToken>
+            {
+                new LoginToken($"{email}token", DateTime.Now.AddDays(14),$"{email}devicename")
+            }};
             _userLoginInfosCollection.InsertOne(userLoginInfo);
+
+            return userLoginInfo;
         }
 
         public async Task<List<User>> GetPlayers()
@@ -83,7 +91,13 @@ namespace IntegrationsTests
             return await _usersCollection.AsQueryable().ToListAsync();
         }
 
-        public async Task AddMatch(HttpClient httpClient, List<string> players)
+        public async Task<UserLoginInfo> GetUserLoginInfo(string email)
+        {
+            var users = await _userLoginInfosCollection.AsQueryable().ToListAsync();
+            return users.SingleOrDefault(x => x.Email == email);
+        }
+
+        public async Task AddMatch(HttpClient httpClient, List<string> players, UserLoginInfo userLoginInfo)
         {
             var uri = Basestring + "/Match/SaveMatch";
             var request = new SaveMatchesRequest
@@ -94,7 +108,22 @@ namespace IntegrationsTests
                     new Match(DateTime.Now, players, new MatchResult{Team1Score = 8, Team2Score = 2}, 0, players.First())
                 }
             };
-            await httpClient.PostAsync(uri, GetHttpContent(request));
+
+            var loginToken = userLoginInfo.Tokens.First();
+            var httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(uri),
+                Headers = 
+                {
+                    { "Token", loginToken.Token },
+                    { "Email", userLoginInfo.Email },
+                    { "DeviceName", loginToken.DeviceName }
+                },
+                Content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json")
+            };
+            var result = await httpClient.SendAsync(httpRequestMessage);
+            var str1 = new string("sdf");
         }
 
         private StringContent GetHttpContent(object obj)

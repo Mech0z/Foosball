@@ -25,17 +25,18 @@ namespace IntegrationsTests
 
             // Arrange
             var httpClient = new HttpClient();
+            var uri = $"{Basestring}/Index";
 
-            testHelper.CreateSeason(DateTime.Today);
+            var result1 = await httpClient.GetAsync(uri);
+            testHelper.CreateSeason(DateTime.Today.AddDays(-1));
             testHelper.Create4Users(true);
             var players = await testHelper.GetPlayers();
-            await testHelper.AddMatch(httpClient, players.Select(x => x.Email).ToList());
+            var userLoginInfo = await testHelper.GetUserLoginInfo(players.First().Email);
+            await testHelper.AddMatch(httpClient, players.Select(x => x.Email).ToList(), userLoginInfo);
 
-            var uri = $"{Basestring}/Index";
 
             // Act
             //TODO Why dont the first one return something
-            var result1 = await httpClient.GetAsync(uri);
             var result2 = await httpClient.GetAsync(uri);
 
             // Assert
