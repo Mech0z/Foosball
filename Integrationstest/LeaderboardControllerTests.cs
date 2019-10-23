@@ -14,7 +14,7 @@ namespace Integrationstest
     [TestFixture]
     public class LeaderboardControllerTests
     {
-        private const string Basestring = "http://localhost:5000/api/Leaderboard";
+        private const string Basestring = "https://foosballapi-integrationtest.azurewebsites.net/api/Leaderboard";
 
         [Test]
         public async Task Index_GetIndex_ShouldReturnLeaderboard()
@@ -23,7 +23,8 @@ namespace Integrationstest
             var httpClient = new HttpClient();
 
             // Act
-            var result = await httpClient.GetAsync($"{Basestring}/Index");
+            var uri = $"{Basestring}/Index";
+            var result = await httpClient.GetAsync(uri);
 
             // Assert
             var resultAsString = await result.Content.ReadAsStringAsync();
