@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Models.Old;
@@ -16,7 +14,7 @@ namespace IntegrationsTests
     public class TestHelper
     {
         //TODO Move to app settings file
-        private const string Basestring = "http://localhost:5000/api";
+        private const string Basestring = "https://foosballapi-integrationtest.azurewebsites.net/api";
 
         private readonly IMongoCollection<User> _usersCollection;
         private readonly IMongoCollection<Season> _seasonsCollection;
@@ -124,13 +122,6 @@ namespace IntegrationsTests
             };
             var result = await httpClient.SendAsync(httpRequestMessage);
             var str1 = new string("sdf");
-        }
-
-        private StringContent GetHttpContent(object obj)
-        {
-            var str = JsonConvert.SerializeObject(obj);
-            var content = new StringContent(str);
-            return content;
         }
     }
 }

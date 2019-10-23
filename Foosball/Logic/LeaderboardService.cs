@@ -62,7 +62,7 @@ namespace Foosball.Logic
                 if (existingLeaderboard == false)
                 {
                     var leaderboardView = await RecalculateLeaderboard(season);
-                    if (leaderboardView.Entries != null && leaderboardView.Entries.Any())
+                    if (leaderboardView.Entries != null)
                     {
                         latestLeaderboardViews.Add(leaderboardView);
                     }

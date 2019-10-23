@@ -27,29 +27,27 @@ namespace IntegrationsTests
             var httpClient = new HttpClient();
             var uri = $"{Basestring}/Index";
 
-            var result1 = await httpClient.GetAsync(uri);
             testHelper.CreateSeason(DateTime.Today.AddDays(-1));
             testHelper.Create4Users(true);
             var players = await testHelper.GetPlayers();
             var userLoginInfo = await testHelper.GetUserLoginInfo(players.First().Email);
             await testHelper.AddMatch(httpClient, players.Select(x => x.Email).ToList(), userLoginInfo);
 
-
             // Act
-            //TODO Why dont the first one return something
-            var result2 = await httpClient.GetAsync(uri);
+            var result = await httpClient.GetAsync(uri);
 
             // Assert
-            var resultAsString = await result2.Content.ReadAsStringAsync();
+            var resultAsString = await result.Content.ReadAsStringAsync();
             var parsed = JsonConvert.DeserializeObject<List<LeaderboardView>>(resultAsString);
-            result2.Should().NotBeNull();
-            parsed.Count.Should().BeGreaterThan(0);
+            result.Should().NotBeNull();
+            parsed.Count.Should().Be(1);
+            parsed.First().Entries.Count.Should().Be(4);
         }
     }
 
     [TestFixture]
     public class LiveMatchControllerTests
     {
-        private const string Basestring = "http://localhost:5000/api/LiveMatch";
+        private const string Basestring = "https://foosballapi-integrationtest.azurewebsites.net/api/LiveMatch";
     }
 }
