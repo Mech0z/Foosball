@@ -46,4 +46,10 @@ namespace IntegrationsTests
             parsed.Count.Should().BeGreaterThan(0);
         }
     }
+
+    [TestFixture]
+    public class LiveMatchControllerTests
+    {
+        private const string Basestring = "http://localhost:5000/api/LiveMatch";
+    }
 }

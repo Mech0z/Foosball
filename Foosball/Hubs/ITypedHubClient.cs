@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Models.RequestResponses;
 
 namespace Foosball.Hubs
 {
@@ -8,5 +9,6 @@ namespace Foosball.Hubs
         Task SendMessageToClient(string title, string name, string message);
         Task MatchAdded();
         Task ActivityUpdated(bool activity, int duration, DateTime? lastUpdatedTime);
+        Task UpdateActivityStatus(UpdateActivityStatusRequest request);
     }
 }
