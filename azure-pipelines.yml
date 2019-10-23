@@ -33,3 +33,4 @@ steps:
     projects: '**/*/Integrationstest.csproj'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    otherConsoleOptions: /Framework:.NETCoreApp,Version=v3.0
