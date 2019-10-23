@@ -37,6 +37,7 @@ namespace IntegrationsTests
             var result = await httpClient.GetAsync(uri);
 
             // Assert
+            Console.WriteLine(result.ReasonPhrase);
             var resultAsString = await result.Content.ReadAsStringAsync();
             var parsed = JsonConvert.DeserializeObject<List<LeaderboardView>>(resultAsString);
             result.Should().NotBeNull();
