@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foosball", "Foosball\Foosball.csproj", "{B21F9E09-B6E3-4070-9265-87719ABC440D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integrationstest", "Integrationstest\Integrationstest.csproj", "{34BF97E8-2459-4695-BB87-4C393727A39E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationsTests", "Integrationstest\IntegrationsTests.csproj", "{34BF97E8-2459-4695-BB87-4C393727A39E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

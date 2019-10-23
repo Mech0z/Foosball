@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Models.Old;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace Integrationstest
+namespace IntegrationsTests
 {
     [TestFixture]
     public class LeaderboardControllerTests
