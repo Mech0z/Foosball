@@ -28,8 +28,9 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
   inputs:
-    projects: '**/*/Integrationstest.csproj'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: "test"
+    projects: "**/*/Integrationstest.csproj"
+    arguments: "-v n"
+    displayName: Run the server-side tests
