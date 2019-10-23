@@ -26,12 +26,7 @@ namespace IntegrationsTests
             // Arrange
             var httpClient = new HttpClient();
             var uri = $"{Basestring}/Index";
-
-            testHelper.CreateSeason(DateTime.Today.AddDays(-1));
-            testHelper.Create4Users(true);
-            var players = await testHelper.GetPlayers();
-            var userLoginInfo = await testHelper.GetUserLoginInfo(players.First().Email);
-            await testHelper.AddMatch(httpClient, players.Select(x => x.Email).ToList(), userLoginInfo);
+            await testHelper.CreateSeasonLeaderBoardAndAddMatch(httpClient);
 
             // Act
             var result = await httpClient.GetAsync(uri);
@@ -44,11 +39,5 @@ namespace IntegrationsTests
             parsed.Count.Should().Be(1);
             parsed.First().Entries.Count.Should().Be(4);
         }
-    }
-
-    [TestFixture]
-    public class LiveMatchControllerTests
-    {
-        private const string Basestring = "https://foosballapi-integrationtest.azurewebsites.net/api/LiveMatch";
     }
 }

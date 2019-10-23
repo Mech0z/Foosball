@@ -67,6 +67,15 @@ namespace IntegrationsTests
             }
         }
 
+        public async Task CreateSeasonLeaderBoardAndAddMatch(HttpClient httpClient)
+        {
+            CreateSeason(DateTime.Today.AddDays(-1));
+            Create4Users(true);
+            var players = await GetPlayers();
+            var userLoginInfo = await GetUserLoginInfo(players.First().Email);
+            await AddMatch(httpClient, players.Select(x => x.Email).ToList(), userLoginInfo);
+        }
+
         public void CreateSeason(DateTime startDate, string seasonName = "Season 1")
         {
             var season = new Season{Name = seasonName, StartDate = startDate};
