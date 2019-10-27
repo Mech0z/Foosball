@@ -48,23 +48,34 @@ namespace IntegrationsTests
             }
         }
 
-        public void CreateUser(string username)
+        public User CreateUser(string username)
         {
             var user = new User($"{username}{emailDomain}", username);
             _usersCollection.InsertOne(user);
+            return user;
         }
 
-        public void Create4Users(bool withPlayerRole)
+        public User CreateTableUser()
         {
+            var name = "table";
+            var user = new User($"{name}{emailDomain}", name);
+            AddRole(user.Email, "Table");
+            return user;
+        }
+
+        public List<User> Create4Users(bool withPlayerRole)
+        {
+            var result = new List<User>();
             var players = new List<string> {"user1", "user2", "user3", "user4"};
             foreach (string player in players)
             {
-                CreateUser(player);
+                result.Add(CreateUser(player));
                 if (withPlayerRole)
                 {
-                    AddPlayerRole($"{player}{emailDomain}");
+                    AddRole($"{player}{emailDomain}", "Player");
                 }
             }
+            return result;
         }
 
         public async Task CreateSeasonLeaderBoardAndAddMatch(HttpClient httpClient)
@@ -82,9 +93,9 @@ namespace IntegrationsTests
             _seasonsCollection.InsertOne(season);
         }
 
-        public UserLoginInfo AddPlayerRole(string email)
+        public UserLoginInfo AddRole(string email, string role)
         {
-            var userLoginInfo = new UserLoginInfo {Email = email, Roles = new List<string> {"Player"}, HashedPassword = "12345", Tokens = new List<LoginToken>
+            var userLoginInfo = new UserLoginInfo {Email = email, Roles = new List<string> {role}, HashedPassword = "12345", Tokens = new List<LoginToken>
             {
                 new LoginToken($"{email}token", DateTime.Now.AddDays(14),$"{email}devicename")
             }};
