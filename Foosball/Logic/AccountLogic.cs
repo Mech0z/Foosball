@@ -113,11 +113,12 @@ namespace Foosball.Logic
             var newPassword = CreatePassword(6);
 
             var success = await _userLoginInfoRepository.AdminChangePassword(email, newPassword);
+            var user = await _userRepository.GetUser(email);
 
             if (!success)
                 return false;
 
-            return await _emailLogic.SendEmail(email, "Your new password", $"New password : {newPassword}");
+            return await _emailLogic.SendEmailV2(email, user.Username, "Your new password", $"New password : {newPassword}");
         }
 
         public string CreatePassword(int length)

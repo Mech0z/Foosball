@@ -27,6 +27,7 @@ namespace Foosball
         {
             services.Configure<ConnectionStringsSettings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<SendGridSettings>(Configuration.GetSection("SendGridSettings"));
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services.AddScoped<ClaimRequirementFilter>();
 
