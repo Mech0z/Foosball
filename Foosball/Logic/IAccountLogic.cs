@@ -18,5 +18,6 @@ namespace Foosball.Logic
         Task<bool> CreateUser(string email, string displayName, string password);
         Task<bool> RequestPassword(string email);
         Task<bool> ChangeEmail(string existingEmail, string newEmail);
+        Task<bool> UserHasRole(string email, ClaimRoles role);
     }
 }

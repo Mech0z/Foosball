@@ -133,6 +133,12 @@ namespace Foosball.Logic
             return res.ToString();
         }
 
+        public async Task<bool> UserHasRole(string email, ClaimRoles role)
+        {
+            var roles = await _userLoginInfoRepository.GetUserRoles(email);
+            return roles.Contains(role.ToString());
+        }
+
         public async Task<bool> Logout(LoginSession session)
         {
             return await _userLoginInfoRepository.Logout(session.Email, session.Token, session.DeviceName);

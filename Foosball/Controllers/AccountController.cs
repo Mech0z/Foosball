@@ -44,7 +44,7 @@ namespace Foosball.Controllers
                     Roles = result.Roles
                 };
             }
-
+            
             return new LoginResponse {LoginFailed = true};
         }
 
@@ -72,6 +72,11 @@ namespace Foosball.Controllers
             if (request.NewEmail == null || !IsValidEmail(request.NewEmail))
             {
                 return BadRequest();
+            }
+            
+            if (request.NewEmail != loginSession.Email)
+            {
+                return Unauthorized();
             }
 
             var result = await _accountLogic.ChangeEmail(loginSession.Email, request.NewEmail);
