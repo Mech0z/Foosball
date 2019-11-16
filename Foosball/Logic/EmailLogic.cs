@@ -1,7 +1,7 @@
 ﻿using System.Net;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using KamilSzymborski.MailSenders;
 using Microsoft.Extensions.Options;
 using Models;
 using SendGrid;
@@ -43,15 +43,30 @@ namespace Foosball.Logic
 
         public async Task<bool> SendEmailV2(string receiverEmail, string receiverName, string subject, string htmlContent)
         {
-            var gmailSender = new GMailSender(Username, Password);
-            var result = await gmailSender.SendAsync(subject, htmlContent, receiverEmail);
-            
-            //var email = new Mail
-            //    {EmailTo = receiverEmail, NameTo = receiverName, Body = htmlContent, Subject = subject};
-            //var a= await Emails.SendEmailAsync(email);
-            
-            
-            return result;
+            var fromAddress = new MailAddress(Username, "Foosball");
+            var toAddress = new MailAddress(receiverEmail, receiverName);
+
+            //https://stackoverflow.com/questions/32260/sending-email-in-net-through-gmail
+            //Remember to turn ON access for unsafe apps on your gmail https://myaccount.google.com/lesssecureapps
+            var smtp = new SmtpClient
+            {
+                Host = SmtpServer,
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, Password)
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = htmlContent
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+
+            return true;
         }
     }
 }
