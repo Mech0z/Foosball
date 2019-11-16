@@ -73,10 +73,12 @@ namespace Foosball.Controllers
             {
                 return BadRequest();
             }
-            
-            if (request.NewEmail != loginSession.Email)
+
+            var existingUserOnNewEmail = await _accountLogic.GetUser(request.NewEmail);
+
+            if (existingUserOnNewEmail != null)
             {
-                return Unauthorized();
+                return BadRequest();
             }
 
             var result = await _accountLogic.ChangeEmail(loginSession.Email, request.NewEmail);

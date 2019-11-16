@@ -84,6 +84,11 @@ namespace Foosball.Logic
             return false;
         }
 
+        public async Task<User> GetUser(string email)
+        {
+            return await _userRepository.GetUser(email);
+        }
+
         public async Task<bool> ChangeUserRoles(string userEmail, List<string> updatedRoles)
         {
             var existingUsers = await _userRepository.GetUsersAsync();

@@ -12,6 +12,7 @@ namespace Foosball.Logic
         Task<LoginResult> ValidateLogin(string email, string token, string deviceName, string? role = null);
         Task<LoginResult> ValidateLogin(LoginSession loginSession, string? role = null);
         Task<GetUserMappingsResponse> GetUserMappings();
+        Task<User> GetUser(string email);
         Task<bool> ChangeUserPassword(string email, string newPassword);
         Task<bool> ChangeUserRoles(string userEmail, List<string> updatedRoles);
         Task<bool> Logout(LoginSession session);
