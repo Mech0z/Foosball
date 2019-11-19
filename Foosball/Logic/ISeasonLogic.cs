@@ -10,6 +10,6 @@ namespace Foosball.Logic
         Task<string> StartNewSeason(UpsertSeasonRequest request);
         Task<List<Season>> GetSeasons();
         Task<List<Season>> GetStartedSeasons();
-        Task<Season> GetActiveSeason();
+        Task<Season> GetActiveSeason(List<Season>? seasons = null);
     }
 }

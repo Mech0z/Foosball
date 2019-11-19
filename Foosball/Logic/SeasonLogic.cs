@@ -55,9 +55,12 @@ namespace Foosball.Logic
             return await _seasonRepository.GetStartedSeasons();
         }
 
-        public async Task<Season> GetActiveSeason()
+        public async Task<Season> GetActiveSeason(List<Season>? seasons = null)
         {
-            var seasons = await _seasonRepository.GetSeasons();
+            if (seasons == null)
+            {
+                seasons = await _seasonRepository.GetSeasons();
+            }
 
             return HelperMethods.GetCurrentSeason(seasons);
         }

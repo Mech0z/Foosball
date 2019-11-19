@@ -46,22 +46,22 @@ namespace Foosball.Controllers
         [HttpGet]
         public async Task<List<Match>> GetPlayerMatches(string email)
         {
-            var matches = await _matchRepository.GetPlayerMatches(email);
+            List<Match> matches = await _matchRepository.GetPlayerMatches(email);
             return matches.OrderByDescending(x => x.TimeStampUtc).ToList();
         }
 
         [HttpGet]
         public async Task<List<PartnerPercentResult>> GetPlayerPartnerResults(string email)
         {
-            var activeSeason = await _seasonLogic.GetActiveSeason();
-            var seasons = await _seasonLogic.GetSeasons();
+            List<Season> seasons = await _seasonLogic.GetSeasons();
+            Season activeSeason = await _seasonLogic.GetActiveSeason(seasons);
             return await _matchupHistoryCreator.GetPartnerWinPercent(seasons, email, activeSeason);
         }
 
         [HttpGet]
         public async Task<IEnumerable<UserResponse>> GetUsers()
         {
-            var users = await _userRepository.GetUsersAsync();
+            List<User> users = await _userRepository.GetUsersAsync();
             return users.Select(user => new UserResponse(user));
         }
 

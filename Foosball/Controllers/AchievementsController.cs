@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Foosball.Logic;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,20 @@ namespace Foosball.Controllers
         }
 
         [HttpGet]
-        public async Task<AchievementsView> Index()
+        public async Task<AchievementsView> Index(string? seasonName)
         {
-            var activeSeason = await _seasonLogic.GetActiveSeason();
             var seasons = await _seasonLogic.GetSeasons();
-            var ach = await _achievementsService.GetAchievementsView(seasons, activeSeason);
+            Season selectedSeason;
+            if (seasonName != null)
+            {
+                selectedSeason = seasons.SingleOrDefault(x => x.Name == seasonName);
+            }
+            else
+            {
+                selectedSeason = await _seasonLogic.GetActiveSeason(seasons);
+            }
+
+            var ach = await _achievementsService.GetAchievementsView(seasons, selectedSeason);
 
             return ach;
         }
