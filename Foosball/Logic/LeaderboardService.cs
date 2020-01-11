@@ -29,7 +29,10 @@ namespace Foosball.Logic
         public async Task<LeaderboardView> RecalculateLeaderboard(Season season)
         {
             var seasons = await _seasonLogic.GetSeasons();
+            
+            await _playerRankHistoryRepository.RemovePlayerHistoryFromSeason(season.Name);
             var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories();
+
             var matches =
                 (await _matchRepository.GetMatches(season.StartDate,
                     HelperMethods.GetNextSeason(seasons, season)?.StartDate))
@@ -43,7 +46,9 @@ namespace Foosball.Logic
             foreach (var match in matches)
             { 
                 var matchPointsChanged = AddMatchToLeaderboard(leaderboardView, match);
-                UpdatePlayerRanks(playerRankHistories, leaderboardView.Entries, season.Name, match.TimeStampUtc);
+                UpdatePlayerRanks(playerRankHistories,
+                    leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList(), season.Name,
+                    match.TimeStampUtc);
                 if (matchPointsChanged)
                 {
                     await _matchRepository.Upsert(match);
@@ -52,7 +57,10 @@ namespace Foosball.Logic
             leaderboardView.Entries = leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList();
 
             await _leaderboardViewRepository.Upsert(leaderboardView);
-            foreach (PlayerRankHistory playerRankHistory in playerRankHistories)
+
+            //Only update those who played this season
+            foreach (PlayerRankHistory playerRankHistory in playerRankHistories.Where(x =>
+                leaderboardView.Entries.Select(x => x.UserName).Contains(x.Email)))
             {
                 await _playerRankHistoryRepository.Upsert(playerRankHistory);
             }
@@ -66,7 +74,7 @@ namespace Foosball.Logic
             string seasonName,
             DateTime matchDate)
         {
-            foreach (LeaderboardViewEntry entry in entries.OrderByDescending(x => x.EloRating))
+            foreach (LeaderboardViewEntry entry in entries)
             {
                 int rank = entries.IndexOf(entry) + 1;
                 PlayerRankHistory playerRankHistory =

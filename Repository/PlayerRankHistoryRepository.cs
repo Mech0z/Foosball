@@ -32,6 +32,17 @@ namespace Repository
             return await query.ToListAsync(); ;
         }
 
+        public async Task RemovePlayerHistoryFromSeason(string seasonName)
+        {
+            var list = await GetPlayerRankHistories();
+            foreach (PlayerRankHistory history in list)
+            {
+                var current = history.PlayerRankHistorySeasonEntries.SingleOrDefault(x => x.SeasonName == seasonName);
+                history.PlayerRankHistorySeasonEntries.Remove(current);
+                await Upsert(history);
+            }
+        }
+
         public async Task Upsert(PlayerRankHistory playerRankHistory)
         {
             if (playerRankHistory.Id == Guid.Empty)

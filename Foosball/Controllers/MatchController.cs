@@ -26,13 +26,15 @@ namespace Foosball.Controllers
         private readonly IMatchRepository _matchRepository;
         private readonly IMatchupResultRepository _matchupResultRepository;
         private readonly IHubContext<MessageHub, ITypedHubClient> _hubContext;
+        private readonly IPlayerRankHistoryRepository _playerRankHistoryRepository;
 
         public MatchController(IMatchRepository matchRepository,
             IMatchupResultRepository matchupResultRepository,
             ILeaderboardService leaderboardService,
             ILeaderboardViewRepository leaderboardViewRepository,
             ISeasonLogic seasonLogic,
-            IHubContext<MessageHub, ITypedHubClient> hubContext)
+            IHubContext<MessageHub, ITypedHubClient> hubContext,
+            IPlayerRankHistoryRepository playerRankHistoryRepository)
         {
             _matchRepository = matchRepository;
             _matchupResultRepository = matchupResultRepository;
@@ -40,6 +42,7 @@ namespace Foosball.Controllers
             _leaderboardViewRepository = leaderboardViewRepository;
             _seasonLogic = seasonLogic;
             _hubContext = hubContext;
+            _playerRankHistoryRepository = playerRankHistoryRepository;
         }
 
         [HttpGet]
@@ -123,7 +126,7 @@ namespace Foosball.Controllers
                 }
 
                 var leaderboards = await _leaderboardService.GetLatestLeaderboardViews();
-
+                var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories();
                 var activeLeaderboard = leaderboards.SingleOrDefault(x => x.SeasonName == currentSeason.Name);
 
                 if (!isEdit)
@@ -132,6 +135,16 @@ namespace Foosball.Controllers
                 }
 
                 await _matchRepository.Upsert(match);
+                _leaderboardService.UpdatePlayerRanks(playerRankHistories,
+                    activeLeaderboard.Entries.OrderByDescending(x => x.EloRating).ToList(), currentSeason.Name,
+                    match.TimeStampUtc);
+
+                //Only update those who played this season
+                foreach (PlayerRankHistory playerRankHistory in playerRankHistories.Where(x =>
+                    activeLeaderboard.Entries.Select(x => x.UserName).Contains(x.Email)))
+                {
+                    await _playerRankHistoryRepository.Upsert(playerRankHistory);
+                }
 
                 if (!isEdit)
                 {
