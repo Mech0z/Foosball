@@ -44,7 +44,8 @@ namespace Foosball
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserLoginInfoRepository, UserLoginInfoRepository>();
             services.AddScoped<IActivityRepository, ActivityRepository>();
-
+            services.AddScoped<IPlayerRankHistoryRepository, PlayerRankHistoryRepository>();
+            
             //Logic
             services.AddScoped<IAchievementsService, AchievementsService>();
             services.AddScoped<ILeaderboardService, LeaderboardService>();

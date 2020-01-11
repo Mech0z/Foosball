@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Models;
@@ -12,19 +13,23 @@ namespace Foosball.Logic
         private readonly ILeaderboardViewRepository _leaderboardViewRepository;
         private readonly IMatchRepository _matchRepository;
         private readonly ISeasonLogic _seasonLogic;
+        private readonly IPlayerRankHistoryRepository _playerRankHistoryRepository;
 
         public LeaderboardService(ILeaderboardViewRepository leaderboardViewRepository,
             IMatchRepository matchRepository,
-            ISeasonLogic seasonLogic)
+            ISeasonLogic seasonLogic,
+            IPlayerRankHistoryRepository playerRankHistoryRepository)
         {
             _leaderboardViewRepository = leaderboardViewRepository;
             _matchRepository = matchRepository;
             _seasonLogic = seasonLogic;
+            _playerRankHistoryRepository = playerRankHistoryRepository;
         }
 
         public async Task<LeaderboardView> RecalculateLeaderboard(Season season)
         {
             var seasons = await _seasonLogic.GetSeasons();
+            var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories();
             var matches =
                 (await _matchRepository.GetMatches(season.StartDate,
                     HelperMethods.GetNextSeason(seasons, season)?.StartDate))
@@ -38,6 +43,7 @@ namespace Foosball.Logic
             foreach (var match in matches)
             { 
                 var matchPointsChanged = AddMatchToLeaderboard(leaderboardView, match);
+                UpdatePlayerRanks(playerRankHistories, leaderboardView.Entries, season.Name, match.TimeStampUtc);
                 if (matchPointsChanged)
                 {
                     await _matchRepository.Upsert(match);
@@ -46,7 +52,50 @@ namespace Foosball.Logic
             leaderboardView.Entries = leaderboardView.Entries.OrderByDescending(x => x.EloRating).ToList();
 
             await _leaderboardViewRepository.Upsert(leaderboardView);
+            foreach (PlayerRankHistory playerRankHistory in playerRankHistories)
+            {
+                await _playerRankHistoryRepository.Upsert(playerRankHistory);
+            }
+            
             return leaderboardView;
+        }
+
+        public List<PlayerRankHistory> UpdatePlayerRanks(
+            List<PlayerRankHistory> playerRankHistories,
+            List<LeaderboardViewEntry> entries,
+            string seasonName,
+            DateTime matchDate)
+        {
+            foreach (LeaderboardViewEntry entry in entries.OrderByDescending(x => x.EloRating))
+            {
+                int rank = entries.IndexOf(entry) + 1;
+                PlayerRankHistory playerRankHistory =
+                    playerRankHistories.SingleOrDefault(x => x.Email == entry.UserName);
+
+                //Player has no history data
+                if (playerRankHistory == null)
+                {
+                    playerRankHistory = new PlayerRankHistory(entry.UserName);
+                    playerRankHistories.Add(playerRankHistory);
+                }
+
+                PlayerRankHistorySeasonEntry activeSeasonHistory =
+                    playerRankHistory.PlayerRankHistorySeasonEntries.SingleOrDefault(x => x.SeasonName == seasonName);
+                if (activeSeasonHistory == null)
+                {
+                    activeSeasonHistory = new PlayerRankHistorySeasonEntry(seasonName);
+                    playerRankHistory.PlayerRankHistorySeasonEntries.Add(activeSeasonHistory);
+                }
+
+                var lastEntry = activeSeasonHistory.HistoryPlots.OrderBy(x => x.Date).LastOrDefault();
+                if (lastEntry != null && lastEntry.EloRating == entry.EloRating && lastEntry.Rank == rank)
+                {
+                    continue;
+                }
+                activeSeasonHistory.HistoryPlots.Add(new PlayerRankHistoryPlot(matchDate, rank, entry.EloRating));
+            }
+
+            return playerRankHistories;
         }
 
         public async Task<List<LeaderboardView>> GetLatestLeaderboardViews()
