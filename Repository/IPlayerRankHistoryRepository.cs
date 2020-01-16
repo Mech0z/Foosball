@@ -6,9 +6,9 @@ namespace Repository
 {
     public interface IPlayerRankHistoryRepository
     {
-        Task<PlayerRankHistory> GetPlayerRankHistory(string email);
-        Task<List<PlayerRankHistory>> GetPlayerRankHistories();
-        Task Upsert(PlayerRankHistory playerRankHistory);
+        Task<PlayerRankSeasonEntry> GetPlayerRankHistory(string email, string seasonName);
+        Task<List<PlayerRankSeasonEntry>> GetPlayerRankHistories(string seasonName);
+        Task Upsert(PlayerRankSeasonEntry playerRankEntry);
         Task RemovePlayerHistoryFromSeason(string seasonName);
     }
 }

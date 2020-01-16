@@ -16,16 +16,16 @@ namespace Foosball.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPlayerRankAsync(string email)
+        public async Task<IActionResult> GetPlayerRankAsync(string email, string seasonName)
         {
-            var playerRankHistory = await _playerRankHistoryRepository.GetPlayerRankHistory(email);
+            var playerRankHistory = await _playerRankHistoryRepository.GetPlayerRankHistory(email, seasonName);
             return Ok(playerRankHistory);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPlayerRanksAsync()
+        public async Task<IActionResult> GetPlayerRanksAsync(string seasonName)
         {
-            var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories();
+            var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories(seasonName);
             return Ok(playerRankHistories);
         }
     }

@@ -3,34 +3,24 @@ using System.Collections.Generic;
 
 namespace Models.Old
 {
-    public class PlayerRankHistory
+    public class PlayerRankSeasonEntry
     {
-        public PlayerRankHistory(string email)
+        public PlayerRankSeasonEntry(string email, string seasonName)
         {
             Email = email;
-            PlayerRankHistorySeasonEntries = new List<PlayerRankHistorySeasonEntry>();
+            SeasonName = seasonName;
+            RankPlots = new List<PlayerRankPlot>();
         }
 
         public Guid Id { get; set; }
         public string Email { get; set; }
-        public List<PlayerRankHistorySeasonEntry> PlayerRankHistorySeasonEntries { get; set; }
-    }
-
-    public class PlayerRankHistorySeasonEntry
-    {
-        public PlayerRankHistorySeasonEntry(string seasonName)
-        {
-            SeasonName = seasonName;
-            HistoryPlots = new List<PlayerRankHistoryPlot>();
-        }
-
         public string SeasonName { get; set; }
-        public List<PlayerRankHistoryPlot> HistoryPlots { get; set; }
+        public List<PlayerRankPlot> RankPlots { get; set; }
     }
 
-    public class PlayerRankHistoryPlot
+    public class PlayerRankPlot
     {
-        public PlayerRankHistoryPlot(DateTime date, int rank, int eloRating)
+        public PlayerRankPlot(DateTime date, int rank, int eloRating)
         {
             Date = date;
             Rank = rank;

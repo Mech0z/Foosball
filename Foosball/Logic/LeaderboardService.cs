@@ -31,7 +31,7 @@ namespace Foosball.Logic
             var seasons = await _seasonLogic.GetSeasons();
             
             await _playerRankHistoryRepository.RemovePlayerHistoryFromSeason(season.Name);
-            var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories();
+            var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories(season.Name);
 
             var matches =
                 (await _matchRepository.GetMatches(season.StartDate,
@@ -59,7 +59,7 @@ namespace Foosball.Logic
             await _leaderboardViewRepository.Upsert(leaderboardView);
 
             //Only update those who played this season
-            foreach (PlayerRankHistory playerRankHistory in playerRankHistories.Where(x =>
+            foreach (PlayerRankSeasonEntry playerRankHistory in playerRankHistories.Where(x =>
                 leaderboardView.Entries.Select(x => x.UserName).Contains(x.Email)))
             {
                 await _playerRankHistoryRepository.Upsert(playerRankHistory);
@@ -68,8 +68,8 @@ namespace Foosball.Logic
             return leaderboardView;
         }
 
-        public List<PlayerRankHistory> UpdatePlayerRanks(
-            List<PlayerRankHistory> playerRankHistories,
+        public List<PlayerRankSeasonEntry> UpdatePlayerRanks(
+            List<PlayerRankSeasonEntry> playerRankHistories,
             List<LeaderboardViewEntry> entries,
             string seasonName,
             DateTime matchDate)
@@ -77,30 +77,22 @@ namespace Foosball.Logic
             foreach (LeaderboardViewEntry entry in entries)
             {
                 int rank = entries.IndexOf(entry) + 1;
-                PlayerRankHistory playerRankHistory =
+                PlayerRankSeasonEntry playerRankHistory =
                     playerRankHistories.SingleOrDefault(x => x.Email == entry.UserName);
 
                 //Player has no history data
                 if (playerRankHistory == null)
                 {
-                    playerRankHistory = new PlayerRankHistory(entry.UserName);
+                    playerRankHistory = new PlayerRankSeasonEntry(entry.UserName, seasonName);
                     playerRankHistories.Add(playerRankHistory);
                 }
 
-                PlayerRankHistorySeasonEntry activeSeasonHistory =
-                    playerRankHistory.PlayerRankHistorySeasonEntries.SingleOrDefault(x => x.SeasonName == seasonName);
-                if (activeSeasonHistory == null)
-                {
-                    activeSeasonHistory = new PlayerRankHistorySeasonEntry(seasonName);
-                    playerRankHistory.PlayerRankHistorySeasonEntries.Add(activeSeasonHistory);
-                }
-
-                var lastEntry = activeSeasonHistory.HistoryPlots.OrderBy(x => x.Date).LastOrDefault();
+                var lastEntry = playerRankHistory.RankPlots.OrderBy(x => x.Date).LastOrDefault();
                 if (lastEntry != null && lastEntry.EloRating == entry.EloRating && lastEntry.Rank == rank)
                 {
                     continue;
                 }
-                activeSeasonHistory.HistoryPlots.Add(new PlayerRankHistoryPlot(matchDate, rank, entry.EloRating));
+                playerRankHistory.RankPlots.Add(new PlayerRankPlot(matchDate, rank, entry.EloRating));
             }
 
             return playerRankHistories;

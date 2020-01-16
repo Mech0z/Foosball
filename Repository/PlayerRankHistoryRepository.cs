@@ -10,48 +10,42 @@ using MongoDB.Driver.Linq;
 
 namespace Repository
 {
-    public class PlayerRankHistoryRepository : BaseRepository<PlayerRankHistory>, IPlayerRankHistoryRepository
+    public class PlayerRankHistoryRepository : BaseRepository<PlayerRankSeasonEntry>, IPlayerRankHistoryRepository
     {
         public PlayerRankHistoryRepository(IOptions<ConnectionStringsSettings> settings) : base(settings, "PlayerRankHistories")
         {
         }
 
-        public async Task<PlayerRankHistory> GetPlayerRankHistory(string email)
+        public async Task<PlayerRankSeasonEntry> GetPlayerRankHistory(string email, string seasonName)
         {
             var result = await Collection.AsQueryable()
-                .Where(x => x.Email == email)
-                .ToListAsync();
+                .SingleOrDefaultAsync(x => x.Email == email && x.SeasonName == seasonName);
 
-            return result.FirstOrDefault();
+            return result;
         }
 
-        public async Task<List<PlayerRankHistory>> GetPlayerRankHistories()
+        public async Task<List<PlayerRankSeasonEntry>> GetPlayerRankHistories(string seasonName)
         {
-            var query = Collection.AsQueryable();
+            var query = Collection.AsQueryable().Where(x => x.SeasonName == seasonName);
 
             return await query.ToListAsync(); ;
         }
 
         public async Task RemovePlayerHistoryFromSeason(string seasonName)
         {
-            var list = await GetPlayerRankHistories();
-            foreach (PlayerRankHistory history in list)
-            {
-                var current = history.PlayerRankHistorySeasonEntries.SingleOrDefault(x => x.SeasonName == seasonName);
-                history.PlayerRankHistorySeasonEntries.Remove(current);
-                await Upsert(history);
-            }
+            await Collection.DeleteManyAsync(
+                Builders<PlayerRankSeasonEntry>.Filter.Eq(x => x.SeasonName, seasonName));
         }
 
-        public async Task Upsert(PlayerRankHistory playerRankHistory)
+        public async Task Upsert(PlayerRankSeasonEntry playerRankSeasonEntry)
         {
-            if (playerRankHistory.Id == Guid.Empty)
+            if (playerRankSeasonEntry.Id == Guid.Empty)
             {
-                await Collection.InsertOneAsync(playerRankHistory);
+                await Collection.InsertOneAsync(playerRankSeasonEntry);
             }
             else
             {
-                await Collection.ReplaceOneAsync(i => i.Id == playerRankHistory.Id, playerRankHistory);
+                await Collection.ReplaceOneAsync(i => i.Id == playerRankSeasonEntry.Id, playerRankSeasonEntry);
             }
         }
     }

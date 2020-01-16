@@ -126,7 +126,7 @@ namespace Foosball.Controllers
                 }
 
                 var leaderboards = await _leaderboardService.GetLatestLeaderboardViews();
-                var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories();
+                var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories(currentSeason.Name);
                 var activeLeaderboard = leaderboards.SingleOrDefault(x => x.SeasonName == currentSeason.Name);
 
                 if (!isEdit)
@@ -140,7 +140,7 @@ namespace Foosball.Controllers
                     match.TimeStampUtc);
 
                 //Only update those who played this season
-                foreach (PlayerRankHistory playerRankHistory in playerRankHistories.Where(x =>
+                foreach (PlayerRankSeasonEntry playerRankHistory in playerRankHistories.Where(x =>
                     activeLeaderboard.Entries.Select(x => x.UserName).Contains(x.Email)))
                 {
                     await _playerRankHistoryRepository.Upsert(playerRankHistory);

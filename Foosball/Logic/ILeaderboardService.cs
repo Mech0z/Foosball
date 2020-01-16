@@ -10,8 +10,8 @@ namespace Foosball.Logic
         Task<LeaderboardView> RecalculateLeaderboard(Season season);
         Task<List<LeaderboardView>> GetLatestLeaderboardViews();
         bool AddMatchToLeaderboard(LeaderboardView leaderboardView, Match match);
-        List<PlayerRankHistory> UpdatePlayerRanks(
-            List<PlayerRankHistory> playerRankHistories,
+        List<PlayerRankSeasonEntry> UpdatePlayerRanks(
+            List<PlayerRankSeasonEntry> playerRankHistories,
             List<LeaderboardViewEntry> entries,
             string seasonName,
             DateTime matchDate);
