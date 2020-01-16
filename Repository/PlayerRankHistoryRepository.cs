@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -16,13 +17,28 @@ namespace Repository
         {
         }
 
+        public async Task<List<PlayerRankHistoryPlot>> GetPlayerRankEntries(string email, string seasonName)
+        {
+            //r test = Collection.Find(Builders<PlayerRankHistory>.Filter.Eq(x => x.Email, email)).ToCursor().Current.FirstOrDefault(x => x.)
+            
+                
+
+            //var sw = new Stopwatch();
+            //sw.Start();
+            ////var data = await Collection.Find(Builders<PlayerRankHistory>.Filter.Eq(x => x.Email, email))
+            ////    .Select(y => y.PlayerRankHistorySeasonEntries.Where(z => z.SeasonName.Equals(seasonName)))
+            ////    .FirstOrDefaultAsync()?.HistoryPlots
+            ////    .ToList();
+            //var elaped = sw.ElapsedMilliseconds;
+            return data;
+        }
+
         public async Task<PlayerRankHistory> GetPlayerRankHistory(string email)
         {
             var result = await Collection.AsQueryable()
                 .Where(x => x.Email == email)
-                .ToListAsync();
-
-            return result.FirstOrDefault();
+                .SingleOrDefaultAsync();
+            return result;
         }
 
         public async Task<List<PlayerRankHistory>> GetPlayerRankHistories()

@@ -10,5 +10,6 @@ namespace Repository
         Task<List<PlayerRankHistory>> GetPlayerRankHistories();
         Task Upsert(PlayerRankHistory playerRankHistory);
         Task RemovePlayerHistoryFromSeason(string seasonName);
+        Task<List<PlayerRankHistoryPlot>> GetPlayerRankEntries(string email, string seasonName);
     }
 }
