@@ -55,6 +55,7 @@ namespace Foosball
             services.AddScoped<IRating, EloRating>();
             services.AddScoped<IUserLogic, UserLogic>();
             services.AddScoped<IEmailLogic, EmailLogic>();
+            services.AddScoped<IPlayerRankLogic, PlayerRankLogic>();
 
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {

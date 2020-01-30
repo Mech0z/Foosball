@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Foosball.Logic;
 using Microsoft.AspNetCore.Mvc;
-using Repository;
 
 namespace Foosball.Controllers
 {
@@ -8,24 +8,24 @@ namespace Foosball.Controllers
     [Route("api/[controller]/[action]")]
     public class PlayerRanksController : Controller
     {
-        private readonly IPlayerRankHistoryRepository _playerRankHistoryRepository;
+        private readonly IPlayerRankLogic _playerRankLogic;
 
-        public PlayerRanksController(IPlayerRankHistoryRepository playerRankHistoryRepository)
+        public PlayerRanksController(IPlayerRankLogic playerRankLogic)
         {
-            _playerRankHistoryRepository = playerRankHistoryRepository;
+            _playerRankLogic = playerRankLogic;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetPlayerRankAsync(string email, string seasonName)
         {
-            var playerRankHistory = await _playerRankHistoryRepository.GetPlayerRankHistory(email, seasonName);
+            var playerRankHistory = await _playerRankLogic.GetPlayerRankAsync(email, seasonName);
             return Ok(playerRankHistory);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetPlayerRanksAsync(string seasonName)
         {
-            var playerRankHistories = await _playerRankHistoryRepository.GetPlayerRankHistories(seasonName);
+            var playerRankHistories = await _playerRankLogic.GetPlayerRanksAsync(seasonName);
             return Ok(playerRankHistories);
         }
     }
