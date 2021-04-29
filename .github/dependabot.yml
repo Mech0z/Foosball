@@ -1,0 +1,38 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Swashbuckle.AspNetCore
+    versions:
+    - 5.6.3
+    - 6.0.2
+    - 6.0.4
+    - 6.0.5
+    - 6.0.7
+    - 6.1.0
+    - 6.1.1
+    - 6.1.2
+  - dependency-name: MongoDB.Driver
+    versions:
+    - 2.11.6
+    - 2.12.0
+    - 2.12.1
+  - dependency-name: Microsoft.NET.Test.Sdk
+    versions:
+    - 16.8.3
+    - 16.9.1
+  - dependency-name: nunit
+    versions:
+    - 3.13.0
+    - 3.13.1
+  - dependency-name: Sendgrid
+    versions:
+    - 9.22.0
+  - dependency-name: Microsoft.VisualStudio.Web.CodeGeneration.Design
+    versions:
+    - 5.0.1
